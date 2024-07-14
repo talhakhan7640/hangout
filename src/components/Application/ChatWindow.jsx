@@ -119,12 +119,6 @@ const ChatWindow = () => {
     setMessageContent(e.target.value);
   };
 
-  // To format the date
-  const formatDate = (dateString) => {
-    const options = { hour: "2-digit", minute: "2-digit" };
-    return new Date(dateString).toLocaleTimeString([], options);
-  };
-
   return (
     <div className="message--container grid grid-rows-12 ">
       <div className="top--bar my-auto px-4 row-span-1 flex ">
@@ -146,11 +140,8 @@ const ChatWindow = () => {
       <div className="message--pool row-span-10 p-4">
         <Messages roomid={roomid} />
       </div>
-
-     
-
-    
-      <div className="message--input row-span-1 px-4 relative">
+      
+     <div className="message--input row-span-1 px-4 relative">
         {filePreview && (
           <div className="file-preview-container absolute left-0 bottom-16 mb-2 ml-4 p-2 rounded flex items-center">
             <img

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { TbSquareRoundedPlus, TbSettings } from "react-icons/tb";
+import { TbSettings } from "react-icons/tb";
+import { VscDiffAdded, VscSettings } from "react-icons/vsc";
+import { IoIosAdd } from "react-icons/io";
 import "../../assets/styles/Rooms.css";
 import CreateRoom from "./CreateRoom";
 import { createPortal } from "react-dom";
@@ -185,7 +187,7 @@ className="w-full h-full object-cover"
 
         <div className="add--settings flex p-4 px-1">
           <div className="add--room my-auto">
-            <TbSquareRoundedPlus
+            <VscDiffAdded
               className="add mx-2 cursor-pointer text-3xl"
               onClick={() => setShowCreateRoomModal(true)}
             />
@@ -196,7 +198,7 @@ className="w-full h-full object-cover"
               )}
           </div>
 
-          <TbSettings className="settings mx-2 cursor-pointer my-auto text-3xl" />
+          <VscSettings className="settings mx-2 cursor-pointer my-auto text-3xl" />
         </div>
       </div>
     </div>

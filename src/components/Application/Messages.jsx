@@ -66,24 +66,6 @@ const Messages = ({roomid}) => {
 	
   return (
     <div className="message--container">
-      {/* {messageContainer.map((msg, idx) => (
-        <div className="message-container mb-3" key={idx}>
-          <div className="profile--username flex">
-            <div className="mt-2 profile--picture h-8 w-8 mr-3 text-white flex items-center justify-center">
-		  <img
-		        src={msg.profilePic} alt="avatar" className="pic "
-              />
-            </div>
-            <div className="my-auto">
-              <div className="user-username my-auto mt-1">{msg.username}</div>
-			  <div className="file">
-				<img src={msg.fileUrl}  className=""/>
-			  </div>
-              <div className="message ml-auto ">{msg.messageContent}</div>
-            </div>
-          </div>
-        </div>
-      ))} */}
 
 
 

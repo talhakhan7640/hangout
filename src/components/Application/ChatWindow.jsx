@@ -147,57 +147,9 @@ const ChatWindow = () => {
         <Messages roomid={roomid} />
       </div>
 
-      {/* ORIGINAL CODE */}
+     
 
-      {/* ChatWindow footer */}
-      {/* <div className="message--input row-span-1 px-4 ">
-{filePreview && (
-          <div className="file-preview-container absolute bottom mb-2">
-            <img
-              src={filePreview}
-              alt="File preview"
-              className="file-preview-image"
-            />
-            <button onClick={handleRemoveFile} className="remove-file-button">
-              Remove
-            </button>
-          </div>
-        )}
-        <div className="message--field  w-full py-4">
-          <form action="" onSubmit={handleSubmitMessage}>
-
-	<span className="file-attach-icon absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer">
-                📎
-                <input
-                  type="file"
-                  className=" absolute left-0 top-0  opacity-0 cursor-pointer w-full h-full"
-                  onChange={handleFileAttach}
-                />
-              </span>
-
-            <input
-              type="text"
-              onChange={handleMessageChange}
-              value={messageContent}
-              className="w-full pl-12 px-3 py-2 text-white"
-              placeholder={`#Type your message and hit enter`}
-            />
-            <span
-              className="emoji-picker-icon absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-              onClick={toggleEmojiPicker}
-            >
-              😀
-            </span>
-          </form>
-          {showEmojiPicker && (
-            <div className="emoji-picker-container absolute right-0 bottom-full mb-2">
-              <EmojiPicker theme="dark" onEmojiClick={(e) => appendEmoji(e)} />
-            </div>
-          )}
-        </div>
-      </div> */}
-
-      {/* ChatWindow footer */}
+    
       <div className="message--input row-span-1 px-4 relative">
         {filePreview && (
           <div className="file-preview-container absolute left-0 bottom-16 mb-2 ml-4 p-2 rounded flex items-center">

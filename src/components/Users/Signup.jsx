@@ -38,49 +38,7 @@ const Signup = () => {
         console.log(error);
       });
   };
-//  return (
-//     <div className="center-container">
-//       {/* <h1 className='text-white text-4xl'>#hangout</h1> */}
-       
-//       <div className="login-container">
-//          <div className="alert p-0">
-//           <span className="text-red-500 font-semibold">{message}</span>
-//         </div>
-//         <div className="login-header">
-//           <h2 className='text-3xl'><span className='italic'>#hangout says: </span>
-// いらっしゃいませ 😊</h2>
-//           <p>Join the conversation with friends with some lofi beats.</p>
-//         </div>
-//         <form id="login-form">
-//           <div className="form-group">
-//             <label htmlFor="username">Username</label>
-//             <input type="text" id="username" name="username" required onChange={(e) => setSignupCredentials({...signupCredentials, username: e.target.value})}/>
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor="email">Email</label>
-//             <input type="email" id="email" name="email" required onChange={(e) => setSignupCredentials({...signupCredentials, email: e.target.value})}/>
-//           </div>
-//           <div className="form-group">
-//             <label htmlFor="password">Password</label>
-//             <input type="password" id="password" name="password" required onChange={(e) => setSignupCredentials({...signupCredentials, password: e.target.value})}/>
-//           </div>
-//           {/* <div className="form-group">
-//             <a href="#" className="forgot-password-link">Forgot password?</a>
-//           </div> */}
-//           <div className="form-group">
-//             <button type="submit" onClick={handleSubmit}>Signup</button>
-//           </div>
-//           <div className="form-links">
-//           <p className="register-link">
-//               <Link to="/users/login"> 
-//              Already have an account?  Login
-//               </Link>
-//             </p> 
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   ); 
+
 
 return (
     <div className="signup--page fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">

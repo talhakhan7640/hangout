@@ -24,7 +24,6 @@ const cookie = new Cookies();
   } else {
   return (
     <div className="index--layout">
-      {/* <div className='block sm:hidden text-4xl font-extrabold text-center my-auto py-auto'>Sorry, hangout is not available for this resolution. Mobile application will be available soon.</div> */}
       <div className="grid grid-cols-12">
         <div className="chat--rooms col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-2">
           <Rooms />
@@ -34,10 +33,6 @@ const cookie = new Cookies();
           <Outlet />
         </div>
 
-        {/* <div className='hidden music--player sm:block sm:col-span-2 md:col-span-4 lg:col-span-3'>  */}
-        {/* <MusicPlayer /> */}
-        {/* Music Player */}
-        {/* </div> */}
       </div>
     </div>
   );

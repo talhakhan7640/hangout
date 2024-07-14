@@ -1,0 +1,132 @@
+.music-player {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #181818; /* Dark background similar to Spotify */
+  color: white;
+  overflow: hidden; /* Hide overflow to prevent scrollbar */
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #282828; /* Darker background for top bar */
+}
+
+.top-bar .logo img {
+  height: 40px; /* Adjust logo height */
+  margin-right: 10px;
+}
+
+.top-bar input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px; /* Rounded search bar */
+  background-color: #333;
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Enable vertical scrolling for tracks list */
+  padding: 20px;
+}
+
+.tracks {
+  flex: 1;
+}
+
+.tracks h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #b3b3b3; /* Lighter text color */
+}
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.track {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #282828; /* Darker border color */
+}
+
+.track-info {
+  flex: 1;
+}
+
+.track-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: white;
+}
+
+.track-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #b3b3b3; /* Lighter text color */
+}
+
+.track-duration {
+  margin-left: 20px;
+  color: #b3b3b3; /* Lighter text color */
+}
+
+.player-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #282828; /* Darker background for controls */
+}
+
+.current-track {
+  flex: 1;
+}
+
+.current-track h2 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #b3b3b3; /* Lighter text color */
+}
+
+.current-track p {
+  margin: 0;
+  font-size: 14px;
+  color: #b3b3b3; /* Lighter text color */
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+.control-btn {
+  margin: 0 10px;
+  padding: 12px 20px;
+  border: none;
+  background-color: #1db954; /* Spotify green */
+  color: white;
+  font-size: 18px;
+  border-radius: 50%; /* Rounded buttons */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.control-btn:hover {
+  background-color: #1ed760; /* Lighter green on hover */
+}
+
+.play-pause-btn {
+  background-color: #1ed760; /* Green for play/pause button */
+}

@@ -1,0 +1,169 @@
+/* .handle--message input{
+  height: 3rem;
+}
+.handle--message form button {
+  height: 3rem;
+} */
+
+
+/* .chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  background-color: #36393f;
+  color: #dcddde;
+} */
+
+/* .chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.profile-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.message-content {
+  /* background-color: #2f3136; 
+  /* border-radius: 8px; 
+  /* padding: 10px; 
+  max-width: 70%;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
+.sender-name {
+  font-weight: bold;
+  color: #7289da;
+  margin-right: 10px;
+}
+
+.message-time {
+  font-size: 0.75em;
+  color: #72767d;
+}
+
+.message-text {
+  font-size: 1em;
+  color: #dcddde;
+} */
+
+.message--container {
+  height: 100vh;
+  background-color: #1E1E1E;
+ 
+}
+
+
+.hamburger--icon {
+  color: whitesmoke;
+  background-color: white;
+  font-size: 22px;
+}
+
+.search--message input {
+  width: 90%;
+  background-color: #333333;
+  /* height: 50px; */
+  height: 100%;
+  outline: none;
+  font-size: 16px;
+}
+.search--message input::placeholder{
+  font-size: 16px;
+  font-style: italic;
+}
+
+.message--input .message--field input {
+  height: 50px;
+  background-color: #333333 !important;
+  font-size: 16px;
+  outline: none;
+  border: none;
+}
+
+.message--field input::placeholder{
+  font-style: italic;
+  font-size: 16px;
+}
+
+
+.message--field {
+  position: relative;
+} */
+
+.emoji-picker-icon {
+  font-size: 1.5rem; /* Adjust the size as needed  */
+}
+
+input:focus + .emoji-picker-icon + #emoji-picker,
+.emoji-picker-icon:hover + #emoji-picker {
+  display: block;
+}
+
+.emoji--picker {
+  background: transparent;
+}
+
+ .message--field {
+  position: relative;
+}
+
+.emoji-picker-icon {
+  font-size: 1.5rem; /* Adjust the size as needed */
+} 
+
+.emoji-picker-container {
+  background: transparent;
+}
+
+
+
+
+
+
+
+
+
+
+/* chat gtp code  */
+
+.file-preview-container {
+  display: flex;
+  align-items: center;
+  background-color: #2d2d2d;
+  border-radius: 0.375rem; /* rounded */
+  padding: 0.5rem; /* p-2 */
+}
+
+.file-preview-image {
+  width: 4rem; /* w-16 */
+  height: 4rem; /* h-16 */
+  object-fit: cover;
+  border-radius: 0.375rem; /* rounded */
+}
+
+.remove-file-button {
+  margin-left: 0.5rem; /* ml-2 */
+  color: #fff;
+  border: none;
+  border-radius: 9999px; /* rounded-full */
+  padding: 0.25rem; /* p-1 */
+  cursor: pointer;
+}
+ 

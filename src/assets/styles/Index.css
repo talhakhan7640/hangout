@@ -1,0 +1,15 @@
+.music--player, .chat--rooms, .chat--window--drawer {
+    color: white;
+    height: 100vh;;
+}
+.music--player {
+    background-color: #222121;
+}
+.chat--rooms {
+    /* background-color: #333536; */
+    /* background-color: #1F2937; */
+    background-color: #252526;
+}
+.chat--window--drawer {
+    background-color: #28292c;
+}

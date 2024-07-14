@@ -1,12 +1,12 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap'); */
+
 .top--bar {
     display: flex;
-    /* border-bottom: 2px solid white; */
+   
 }
 .searchRoom {
     width: 90%;
     height: 3rem;
-    /* background-color: aqua; */
+   
 }
 .searchRoom form {
     width: 100%;
@@ -34,8 +34,7 @@
 .add {
     font-size: 55px;
      cursor: pointer;
-     /* background-color: #28292c; */
-     /* color: #7289da; */
+   
      color: #2f64d6;
 }
 .add:hover {
@@ -83,11 +82,6 @@
   color: #b9bbbe;
 }
 
-
-
-/* .add:hover, .settings:hover { */
-  /* color: #b9bbbe; */
-/* } *  font-size: 20px; /* Adjust size as needed */
 
 
 .profile--picture{

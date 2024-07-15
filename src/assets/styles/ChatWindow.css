@@ -69,6 +69,11 @@ input:focus + .emoji-picker-icon + #emoji-picker,
   background: transparent;
 }
 
+.popup-menu {
+  background-color: #1E1E1E;
+  border: 0.5px solid rgba(30, 157, 233, .2);
+   background-clip: padding-box;
+}
 
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../assets/styles/ChatWindow.css";
 import { TbDotsVertical } from "react-icons/tb";
 import EmojiPicker from "emoji-picker-react";
@@ -23,6 +23,13 @@ const ChatWindow = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const [fileUrl, setFileUrl] = useState("");
+
+  //Toggle popup
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+   const togglePopup = () => {
+    setIsPopupVisible(!isPopupVisible);
+  };
 
   const appendEmoji = (emoji) => {
     let message = messageContent;
@@ -119,6 +126,27 @@ const ChatWindow = () => {
     setMessageContent(e.target.value);
   };
 
+  const navigate = useNavigate();
+  const handleLeaveRoom = () => {
+    const url = "https://hagnout-backend.onrender.com/rooms/leave-room/";
+    
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        roomId: roomid,
+        username: cookie.get("username"),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        navigate("/hangout/rooms");
+        window.location.reload();
+      });
+  }
+
   return (
     <div className="message--container grid grid-rows-12 ">
       <div className="top--bar my-auto px-4 row-span-1 flex ">
@@ -133,7 +161,17 @@ const ChatWindow = () => {
             className=" my-auto px-3 py-2 text-white"
             placeholder="Search message"
           />
-          <TbDotsVertical className=" text-3xl my-auto more--options" />
+          <TbDotsVertical className=" text-3xl my-auto more--options"  onClick={togglePopup}/>
+
+          {isPopupVisible && (
+            <div className="popup-menu absolute right-12 mt-2 w-48 text-white">
+              <ul>
+                <li className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer" onClick={handleLeaveRoom}>Leave Room</li>
+                <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Option 2</li>
+                <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Option 3</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 

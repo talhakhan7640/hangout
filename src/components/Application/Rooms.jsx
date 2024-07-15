@@ -28,6 +28,13 @@ const Rooms = () => {
 	// for searching room with name
 	const [roomName, setRoomName] = useState("");
 
+	//Toggle setting popup
+  const [isSettingPopupVisible, setIsSettingPopupVisible] = useState(false);
+
+   const togglePopup = () => {
+    setIsSettingPopupVisible(!isSettingPopupVisible);
+  };
+
 	const handleChangeRoomName = (e) => {
 		setRoomName(e.target.value);
 	};
@@ -198,7 +205,16 @@ className="w-full h-full object-cover"
               )}
           </div>
 
-          <VscSettings className="settings mx-2 cursor-pointer my-auto text-3xl" />
+          <VscSettings className="settings mx-2 cursor-pointer my-auto text-3xl" onClick={togglePopup}/>
+
+		{isSettingPopupVisible && (
+            <div className="popup-menu absolute md:bottom-20 md:left-4 2xl:left-28 2xl:bottom-16 w-48 text-white">
+              <ul>
+                <li className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer">Sign Out</li>
+                <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">Settings</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

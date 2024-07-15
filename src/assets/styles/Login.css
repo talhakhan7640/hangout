@@ -3,24 +3,16 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-   background: url('../images/bg4.png') no-repeat;
-    
-    background-position: center;
 }
 
 .login--page{
- background: url('../images/bg4.png') no-repeat;
-   
-    background-position: center;
+  background-color: #1e1e1e;
 }
 
-.login-container {
-  
+.login-form-container {
+  background-color: #252526;  
   width: 30%;
   padding: 20px;
-  background-color: #36393f;
- 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #fff;
 }
 @media screen and  (max-width: 1280px) {
@@ -78,7 +70,7 @@
 .form-group button {
   width: 100%;
   padding: 8px;
-  background-color: #202225;
+  background-color: #2262c2;
   border: 1px solid #202225;
 
   color: #fff;
@@ -107,6 +99,12 @@
   color: #fff;
   font-weight: 400;
   cursor: pointer;
+}
+
+.username--input--field, .password--input--field{
+  background-color: #1e1e1e;
+  border: none;
+  outline: none;
 }
 
 .form-group button:hover {

@@ -67,7 +67,7 @@ const Messages = ({ roomid }) => {
   return (
     <div className="message--container">
       {messageContainer.map((msg, idx) => (
-        <div className="message-container mb-3" key={idx}>
+        <div className="message-container mb-3 mr-4" key={idx}>
           <div className="profile--username flex">
             <div className="mt-2 profile--picture h-8 w-8 mr-3 text-white flex items-center justify-center">
               <img src={msg.profilePic} alt="avatar" className="pic" />

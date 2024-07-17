@@ -91,7 +91,6 @@ const Rooms = () => {
 			});
 	};
 
-
 	// Join room function. When user clicks join then this func is called 
 	const joinRoomHandler = async (roomId) => {
 		const url = "https://hagnout-backend.onrender.com/rooms/join-room";
@@ -116,6 +115,18 @@ const Rooms = () => {
 	const goToChatRoom = (roomid, roomName) => {
 		navigate(`room/${roomName}/${roomid}`);
 	};
+
+  const userLogoutHnadler = async (e) => {
+    e.preventDefault();
+    const url = "https://hagnout-backend.onrender.com/users/logout"
+    const response = await fetch(url);
+    const data = response.json();
+     cookies.set("TOKEN", data.token, { path: "/" });
+     cookies.set("username", "", { path: "/" });
+     cookies.set("senderId", "", { path: "/" });
+     cookies.set("profilePic", "", { path: "/" });
+     navigate("/");
+  }
 
   return (
     <div className="rooms-container grid grid-rows-12">
@@ -208,9 +219,9 @@ className="w-full h-full object-cover"
           <VscSettings className="settings mx-2 cursor-pointer my-auto text-3xl" onClick={togglePopup}/>
 
 		{isSettingPopupVisible && (
-            <div className="popup-menu absolute md:bottom-20 md:left-4 2xl:left-28 2xl:bottom-16 w-48 text-white">
+            <div className="popup-menu absolute bottom-20 left-12 md:bottom-16 md:left-7 2xl:left-28 2xl:bottom-16 w-48 text-white">
               <ul>
-                <li className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer">Sign Out</li>
+                <button className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer w-full text-left" onClick={userLogoutHnadler}>Sign Out</button>
                 <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">Settings</li>
               </ul>
             </div>
@@ -222,15 +233,3 @@ className="w-full h-full object-cover"
 };
 
 export default Rooms;
-
-
-
-
-
-
-
-		// socket.on("msg", (msgC) => {
-		// 	console.log('Received message from socket:', msgC);
-		// 	setSocketMessages((prevMessages) => [...prevMessages, msgC]);
-		// });
-

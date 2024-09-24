@@ -8,7 +8,6 @@ const Messages = ({ roomid }) => {
   const [loading, setLoading] = useState(true);
 
   const url = `https://hagnout-backend.onrender.com/messages/${roomid}`;
-  // const url = `http://localhost:5000/messages/${roomid}`
 
   useEffect(() => {
     const controller = new AbortController();

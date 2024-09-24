@@ -1,0 +1,43 @@
+.music-player {
+	width: 100%;
+}
+
+.search--music .border {
+    border: none;
+    background-color: #1E1E1E;
+    height: 2px;
+    width: 100%;
+}
+.search--music input {
+    width: 100%;
+    height: 50px;
+    /* background-color: #1E1E1E; */
+    background-color: #2A2A2A;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+.search--music input::placeholder{
+    font-size: 16px;
+    font-style: italic;
+}
+.file--upload--button{
+	display: none;
+}
+.tracks--list {
+    overflow-y: scroll;
+      scrollbar-width: thin;
+      overflow-y: overlay;
+      scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.tracks--list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tracks--list::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}

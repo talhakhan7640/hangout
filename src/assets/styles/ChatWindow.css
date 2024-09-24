@@ -2,7 +2,11 @@
 
 .message--container {
   height: 100vh;
-  background-color: #1E1E1E;
+  /* background-color: #1E1E1E; */
+  background-color: #222325;
+}
+
+.message--container .room--name {
 }
 
 
@@ -14,8 +18,8 @@
 
 .search--message input {
   width: 90%;
-  background-color: #333333;
- 
+  /* background-color: #333333; */
+  background-color: #303136;
   height: 100%;
   outline: none;
   font-size: 16px;
@@ -27,7 +31,8 @@
 
 .message--input .message--field input {
   height: 50px;
-  background-color: #333333 !important;
+  /* background-color: #333333 !important; */
+  background-color: #303136;
   font-size: 16px;
   outline: none;
   border: none;

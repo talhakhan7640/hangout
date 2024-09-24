@@ -1,11 +1,10 @@
-import React, {useState ,useEffect} from 'react'
+import React, {useEffect} from 'react'
 import '../assets/styles/Index.css';
 import Rooms from '../components/Application/Rooms';
-import ChatWindow from '../components/Application/ChatWindow';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutlet } from 'react-router-dom';
 import Cookies from "universal-cookie";
 import AccessDenied from "../pages/AccessDenied";
-import { useSelector } from 'react-redux';
+import MusicPlayer from '../components/Application/MusicPlayer';
 
 const Index = () => {
   useEffect(() => {
@@ -14,7 +13,10 @@ const Index = () => {
       window.location.reload();
     }
   }, []);
-const cookie = new Cookies();
+  const cookie = new Cookies();
+
+  const outlet = useOutlet();
+
   if (cookie.get("TOKEN") === undefined) {
     return (
       <div>
@@ -24,14 +26,24 @@ const cookie = new Cookies();
   } else {
   return (
     <div className="index--layout">
-      <div className="grid grid-cols-12">
-        <div className="chat--rooms col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-2">
+      <div className="grid grid-cols-12 h-screen">
+    <div className="chat--rooms col-span-2 xl:col-span-2">
           <Rooms />
         </div>
 
-        <div className="col-span-10 chat--window--drawer sm:col-span-10 md:col-span-10 lg:col-span-10">
+    <div className={`chat--window--drawer col-span-10 xl:col-span-10 ${
+              outlet ? '' : 'flex justify-center items-center'
+            }`}>
+   
+    {outlet? (
           <Outlet />
+    ) : (
+      <div className="select--room--message flex justify-center align-center ">
+   <h1 className=''>Select room to start conversation</h1>
+              </div>
+    )}
         </div>
+
 
       </div>
     </div>

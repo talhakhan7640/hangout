@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../assets/styles/ChatWindow.css";
 import { TbDotsVertical } from "react-icons/tb";
@@ -6,6 +6,7 @@ import EmojiPicker from "emoji-picker-react";
 import Messages from "./Messages";
 import Cookies from "universal-cookie";
 import socket from "../socket/socket.js";
+import MusicPlayer from "./MusicPlayer";
 
 import { storage } from "../../firebase/firebase.config.js";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
@@ -148,7 +149,9 @@ const ChatWindow = () => {
   }
 
   return (
-    <div className="message--container grid grid-rows-12 ">
+  
+    <div className="message--container grid grid-cols-12">
+       <div className=" col-span-7 h-full lg:col-span-9 grid grid-rows-12 ">
       <div className="top--bar my-auto px-4 row-span-1 flex ">
         <div className="text-2xl font-bold w-full room--name my-auto">
           <span className="tag">#</span>
@@ -228,6 +231,13 @@ const ChatWindow = () => {
         </div>
       </div>
     </div>
+
+
+    <div className="col-span-5 lg:col-span-3">
+        <MusicPlayer />
+    </div>
+
+</div>
   );
 };
 

@@ -13,16 +13,13 @@ import cover from "../../assets/images/pngwing.com.png";
 const MusicPlayer = () => {
   const { roomid } = useParams();
   const [tracks, setTracks] = useState([]);
-  const [currentTrack, setCurrentTrack] = useState({ name: "", url: "", coverUrl: "" });
+  const [currentTrack, setCurrentTrack] = useState({ name: "", url: "" });
   const [runningTrack, setRunningTrack] = useState({ name: "", url: "" });
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(null);
 
   const changeCurrentTrack = (trackName, trackUrl) => {
     socket.emit("msg", { trackName, trackUrl });
     setCurrentTrack({ name: trackName, url: trackUrl });
     setRunningTrack({ name: trackName, url: trackUrl });
-    setIsPlaying(true);
   };
 
   const handleFileChange = (e) => {
@@ -68,32 +65,7 @@ const MusicPlayer = () => {
     });
   }, [roomid]);
 
-  // Audio controls (Play, Pause, Next, Previous)
-  const handlePlay = () => {
-    setIsPlaying(true);
-    audioRef.current.play();
-  };
-
-  const handlePause = () => {
-    setIsPlaying(false);
-    audioRef.current.pause();
-  };
-
-  const handleNextTrack = () => {
-    const currentIndex = tracks.findIndex((track) => track.trackName === currentTrack.name);
-    const nextIndex = (currentIndex + 1) % tracks.length; // Loop back to the first track
-    const nextTrack = tracks[nextIndex];
-    changeCurrentTrack(nextTrack.trackName, nextTrack.trackUrl);
-  };
-
-  const handlePreviousTrack = () => {
-    const currentIndex = tracks.findIndex((track) => track.trackName === currentTrack.name);
-    const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length; // Loop back to the last track
-    const prevTrack = tracks[prevIndex];
-    changeCurrentTrack(prevTrack.trackName, prevTrack.trackUrl);
-  };
   
-
   // goes here
 
   return (
@@ -123,14 +95,7 @@ const MusicPlayer = () => {
       {tracks.map((track, index) => (
         <div key={index}>
           <div className="track flex justify-between items-center px-4 py-2">
-            <div className="track--cover w-12 h-12 mr-4">
-              <img
-                src={track.coverUrl || cover}
-                alt={`${track.trackName} cover`}
-                className="w-full h-full object-cover rounded"
-              />
-            </div>
-            <span className="track--name flex-grow font-medium text-normal">
+                        <span className="track--name flex-grow font-medium text-normal">
               {track.trackName}
             </span>
             <button
@@ -144,34 +109,9 @@ const MusicPlayer = () => {
       ))}
     </div>
 
-    <div className="row-span-1 bg-red-100">
-      <div className="track--controls p-4 flex items-center space-x-4 bg-gray-900 rounded-md">
-        <div className="track--cover w-16 h-16">
-          <img
-            src={currentTrack.coverUrl || "default-cover.png"}
-            alt={currentTrack.name}
-            className="w-full h-full object-cover rounded-md"
-          />
-        </div>
-        <div className="track--info flex-grow">
-          <h2 className="text-lg font-semibold text-white">
-            {currentTrack.name || "No Track Selected"}
-          </h2>
-          <p className="text-sm text-gray-400">{currentTrack.artist || "Unknown Artist"}</p>
-        </div>
-        <div className="audio--controls flex items-center space-x-4">
-          <button className="text-white text-2xl hover:text-green-400" onClick={handlePreviousTrack}>
-            <FaStepBackward />
-          </button>
-          <button className="text-white text-4xl hover:text-green-400" onClick={isPlaying ? handlePause : handlePlay}>
-            {isPlaying ? <FaPause /> : <FaPlay />}
-          </button>
-          <button className="text-white text-2xl hover:text-green-400" onClick={handleNextTrack}>
-            <FaStepForward />
-          </button>
-        </div>
-        <audio ref={audioRef} src={currentTrack.url} className="hidden" autoPlay />
-      </div>
+    <div className="row-span-1 ">
+     <span>{currentTrack.name}</span>
+    <audio src={currentTrack.url} autoPlay controls/>
     </div>
   </div>
 );

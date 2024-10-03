@@ -1,7 +1,13 @@
 import { io } from "socket.io-client";
 
+// local socket instance
+const localSocket = "http://localhost:5000";
+
+// live socket instance
+const liveSocket = "https://hagnout-backend.onrender.com/"
+
 //Create a socket instance 
-const socket = io("https://hagnout-backend.onrender.com/", {
+const socket = io(liveSocket, {
 	extraHeaders: {
 		'my-custom-header' : "abcd",
 	}

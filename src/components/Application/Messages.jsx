@@ -43,38 +43,41 @@ const Messages = ({ roomid }) => {
     return <div>Loading messages...</div>;
   }
 
- const linkify = (text) => {
-  const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  const linkify = (text) => {
+    const urlRegex =
+      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
 
-  return text.split(urlRegex).map((part, index) =>
-    urlRegex.test(part) ? (
-      <a
-        key={index}
-        href={part}
-        style={{ color: "#1E9DE9", fontStyle: "italic" }}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {part}
-      </a>
-    ) : (
-      part
-    )
-  );
-}; 
+    return text.split(urlRegex).map((part, index) =>
+      urlRegex.test(part) ? (
+        <a
+          key={index}
+          href={part}
+          style={{ color: "#1E9DE9", fontStyle: "italic" }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {part}
+        </a>
+      ) : (
+        part
+      )
+    );
+  };
 
   return (
     <div className="message--container">
       {messageContainer.map((msg, idx) => (
-        <div className="message-container mb-3 mr-4" key={idx}>
+        <div className="message-container mb-2 mr-4" key={idx}>
           <div className="profile--username flex">
-            <div className="mt-2 profile--picture h-8 w-8 mr-3 text-white flex items-center justify-center">
+            <div className="mt-2 profile--picture h-9 w-9 mr-3 text-white flex items-center justify-center">
               <img src={msg.profilePic} alt="avatar" className="pic" />
             </div>
             <div className="my-auto">
               <div className="user-username my-auto mt-1 flex">
-                <span className="font-semibold">{msg.username}</span>
-                <span className="ml-4 text-sm my-auto timestamp">{moment(msg.timestamp).format('MMMM Do YYYY, h:mm a')}</span>
+                <span className="font-semibold username-msg">{msg.username}</span>
+                <span className="ml-4 text-sm my-auto timestamp">
+                  {moment(msg.timestamp).format("MMMM Do YYYY, h:mm a")}
+                </span>
               </div>
               {msg.fileUrl && (
                 <div className="file">

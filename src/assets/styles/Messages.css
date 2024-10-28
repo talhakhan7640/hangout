@@ -20,3 +20,11 @@
 .timestamp {
   color: #9CA3AF;
 }
+
+.username-msg { 
+  font-size: 15px;
+}
+
+.message {
+  font-size: 15px;
+}

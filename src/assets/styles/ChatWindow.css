@@ -1,12 +1,10 @@
-
-
 .message--container {
   height: 100vh;
-  /* background-color: #1E1E1E; */
   background-color: #222325;
 }
 
 .message--container .room--name {
+  color: #30DE6D;
 }
 
 
@@ -31,7 +29,6 @@
 
 .message--input .message--field input {
   height: 50px;
-  /* background-color: #333333 !important; */
   background-color: #303136;
   font-size: 16px;
   outline: none;
@@ -42,7 +39,6 @@
   font-style: italic;
   font-size: 16px;
 }
-
 
 .message--field {
   position: relative;
@@ -78,16 +74,6 @@ input:focus + .emoji-picker-icon + #emoji-picker,
   border: 0.5px solid rgba(30, 157, 233, .2);
    background-clip: padding-box;
 }
-
-
-
-
-
-
-
-
-
-
 
 .file-preview-container {
   display: flex;

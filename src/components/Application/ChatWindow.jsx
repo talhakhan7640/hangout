@@ -27,7 +27,7 @@ const ChatWindow = () => {
   //Toggle popup
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-   const togglePopup = () => {
+  const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
   };
 
@@ -88,7 +88,7 @@ const ChatWindow = () => {
     if (messageContent.length > 0 || fileUrlToSend) {
       // make an API call for sending message
 
-      const url= "https://hagnout-backend.onrender.com/messages/send";
+      const url = "https://hagnout-backend.onrender.com/messages/send";
       // const url = "http://localhost:5000/messages/send";
 
       await fetch(url, {
@@ -129,7 +129,7 @@ const ChatWindow = () => {
   const navigate = useNavigate();
   const handleLeaveRoom = () => {
     const url = "https://hagnout-backend.onrender.com/rooms/leave-room/";
-    
+
     fetch(url, {
       method: "PUT",
       headers: {
@@ -145,100 +145,113 @@ const ChatWindow = () => {
         navigate("/hangout/rooms");
         window.location.reload();
       });
-  }
+  };
 
   return (
-  
     <div className="message--container grid grid-cols-12 ">
-       <div className=" col-span-7 h-full room--details--container lg:col-span-9 grid grid-rows-12 ">
-      <div className="top--bar my-auto px-4 row-span-1 flex ">
-        <div className="text-2xl font-bold w-full room--name my-auto">
-          <span className="tag">#</span>
-          {roomName}
-        </div>
-
-        <div className="search--message more--options w-full flex justify-between">
-          <input
-            type="text"
-            className=" my-auto px-3 py-2 text-white"
-            placeholder="Search message"
-          />
-          <TbDotsVertical className=" text-3xl my-auto more--options"  onClick={togglePopup}/>
-
-          {isPopupVisible && (
-            <div className="popup-menu absolute right-12 mt-2 w-48 text-white">
-              <ul>
-                <li className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer" onClick={handleLeaveRoom}>Leave Room</li>
-                <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">Invite Friend</li>
-                <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Mute Room</li>
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="message--pool row-span-10 p-4 overflow-y-auto" style={{ maxHeight: '83vh' }}>
-        <Messages roomid={roomid} className=""/>
-      </div>
-      
-     <div className="message--input row-span-1 px-4 relative">
-        {filePreview && (
-          <div className="file-preview-container absolute left-0 bottom-16 mb-2 ml-4 p-2 rounded flex items-center">
-            <img
-              src={filePreview}
-              alt="File preview"
-              className="file-preview-image w-48 h-48 object-cover rounded"
-            />
-            <button
-              onClick={handleRemoveFile}
-              className="remove-file-button ml-2 text-white p-1 my-0"
-            >
-              ✕
-            </button>
+      <div className=" col-span-7 h-full room--details--container lg:col-span-9 grid grid-rows-12 ">
+        <div className="top--bar my-auto px-4 row-span-1 flex ">
+          <div className="text-2xl font-bold w-full room--name my-auto">
+            <span className="tag">#</span>
+            {roomName}
           </div>
-        )}
-        <div className="message--field w-full py-4">
-          <form action="" onSubmit={handleSubmitMessage}>
-            <span className="file-attach-icon absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer">
-              📎
-              <input
-                type="file"
-                className="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full"
-                onChange={handleFileAttach}
-              />
-            </span>
 
+          <div className="search--message more--options w-full flex justify-between">
             <input
               type="text"
-              onChange={handleMessageChange}
-              value={messageContent}
-              className="w-full pl-12 px-3 py-2 text-white"
-              placeholder={`#Type your message and hit enter`}
+              className=" my-auto px-3 py-2 text-white"
+              placeholder="Search message"
             />
-            <span
-              className="emoji-picker-icon absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-              onClick={toggleEmojiPicker}
-            >
-              😀
-            </span>
-          </form>
-          {showEmojiPicker && (
-            <div className="emoji-picker-container absolute right-0 bottom-full mb-2">
-              <EmojiPicker theme="dark" onEmojiClick={(e) => appendEmoji(e)} />
+            <TbDotsVertical
+              className=" text-3xl my-auto more--options"
+              onClick={togglePopup}
+            />
+
+            {isPopupVisible && (
+              <div className="popup-menu absolute right-12 mt-2 w-48 text-white">
+                <ul>
+                  <li
+                    className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer"
+                    onClick={handleLeaveRoom}
+                  >
+                    Leave Room
+                  </li>
+                  <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">
+                    Invite Friend
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
+                    Mute Room
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div
+          className="message--pool row-span-10 p-4 overflow-y-auto"
+          style={{ maxHeight: "83vh" }}
+        >
+          <Messages roomid={roomid} className="" />
+        </div>
+
+        <div className="message--input row-span-1 px-4 relative">
+          {filePreview && (
+            <div className="file-preview-container absolute left-0 bottom-16 mb-2 ml-4 p-2 rounded flex items-center">
+              <img
+                src={filePreview}
+                alt="File preview"
+                className="file-preview-image w-48 h-48 object-cover rounded"
+              />
+              <button
+                onClick={handleRemoveFile}
+                className="remove-file-button ml-2 text-white p-1 my-0"
+              >
+                ✕
+              </button>
             </div>
           )}
+          <div className="message--field w-full py-4">
+            <form action="" onSubmit={handleSubmitMessage}>
+              <span className="file-attach-icon absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer">
+                📎
+                <input
+                  type="file"
+                  className="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full"
+                  onChange={handleFileAttach}
+                />
+              </span>
+
+              <input
+                type="text"
+                onChange={handleMessageChange}
+                value={messageContent}
+                className="w-full pl-12 px-3 py-2 text-white"
+                placeholder={`#Type your message and hit enter`}
+              />
+              <span
+                className="emoji-picker-icon absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={toggleEmojiPicker}
+              >
+                😀
+              </span>
+            </form>
+            {showEmojiPicker && (
+              <div className="emoji-picker-container absolute right-0 bottom-full mb-2">
+                <EmojiPicker
+                  theme="dark"
+                  onEmojiClick={(e) => appendEmoji(e)}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      <div className="col-span-5 lg:col-span-3">
+        <MusicPlayer />
+      </div>
     </div>
-
-
-     <div className="col-span-5 lg:col-span-3">
-         <MusicPlayer />
-     </div>
-
-      
-
-</div>
   );
 };
 

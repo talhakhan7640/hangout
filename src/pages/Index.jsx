@@ -27,11 +27,11 @@ const Index = () => {
   return (
     <div className="index--layout">
       <div className="grid grid-cols-12 h-screen">
-    <div className="chat--rooms col-span-2 xl:col-span-2">
+    <div className="chat--rooms col-span-3 xl:col-span-2">
           <Rooms />
         </div>
 
-    <div className={`chat--window--drawer col-span-10 xl:col-span-10 ${
+    <div className={`chat--window--drawer col-span-9 xl:col-span-10 ${
               outlet ? '' : 'flex justify-center items-center'
             }`}>
    

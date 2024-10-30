@@ -25,11 +25,11 @@
     background-color: #222325;
     border: none;
     outline: none;
-    font-size: 16px;
+    font-size: 15px;
+    color: #DBDEE1;
 }
 .search--room input::placeholder{
-    font-size: 16px;
-    font-style: italic;
+    font-size: 15px;
 }
 
 .add {
@@ -97,7 +97,6 @@
 
 
 .rooms .room ,.join--room {
-    /* background-color: #333333; */
     background-color: #292A2E;
 }
 

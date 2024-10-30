@@ -4,7 +4,7 @@
 }
 
 .message--container .room--name {
-  color: #30DE6D;
+  color: #DBDEE1;
 }
 
 
@@ -14,30 +14,31 @@
   font-size: 22px;
 }
 
+.search--message { 
+  width: fit-content;
+}
 .search--message input {
-  width: 90%;
-  /* background-color: #333333; */
-  background-color: #303136;
-  height: 100%;
+  color: #DBDEE1;
+  background-color: #19191B;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
+  width: 100%;
 }
 .search--message input::placeholder{
-  font-size: 16px;
-  font-style: italic;
+  font-size: 14px;
 }
 
 .message--input .message--field input {
   height: 50px;
   background-color: #303136;
-  font-size: 16px;
+  font-size: 15px;
   outline: none;
   border: none;
+  color: #DBDEE1;
 }
 
 .message--field input::placeholder{
-  font-style: italic;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .message--field {

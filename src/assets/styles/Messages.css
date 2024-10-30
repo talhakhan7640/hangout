@@ -15,16 +15,42 @@
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: content-box;
+  width: 100%;
 }
 
 .timestamp {
   color: #9CA3AF;
 }
 
+.profile--username {
+  width: 96%;
+}
+
 .username-msg { 
-  font-size: 15px;
+  font-size: 16px;
+  color: #DBDEE1;
 }
 
 .message {
   font-size: 15px;
+  color: #DBDEE1;
 }
+.chat-image {
+  max-width: 500px; /* Adjust this max width to your preference */
+  max-height: 300px; /* Adjust this max height to your preference */
+  width: auto;
+  height: auto;
+  object-fit: contain; /* Maintains aspect ratio */
+  border-radius: 8px;
+}
+
+.message-container {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-container:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Light overlay effect */
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15); /* Slight shadow effect */
+}
+
+

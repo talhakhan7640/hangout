@@ -9,6 +9,9 @@ import socket from "../socket/socket.js";
 import MusicPlayer from "./MusicPlayer";
 import { storage } from "../../firebase/firebase.config.js";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { IoPeopleSharp } from "react-icons/io5";
+import { TbPinFilled } from "react-icons/tb";
+import { RiNeteaseCloudMusicFill } from "react-icons/ri";
 
 const ChatWindow = () => {
   const cookie = new Cookies();
@@ -23,6 +26,7 @@ const ChatWindow = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const [fileUrl, setFileUrl] = useState("");
+  const [membersList, setMembersList] = useState([]);
 
   //Toggle popup
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -103,21 +107,21 @@ const ChatWindow = () => {
           roomId: roomid,
         }),
       })
-        .then((response) => {
-          // send real time message to the server
-          socket.emit("msg", {
-            messageContent: messageContent,
-            fileUrl: fileUrlToSend,
-            username: cookie.get("username"),
-          });
-          setMessageContent("");
-          setSelectedFile(null);
-          setFilePreview(null);
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data.message);
+      .then((response) => {
+        // send real time message to the server
+        socket.emit("msg", {
+          messageContent: messageContent,
+          fileUrl: fileUrlToSend,
+          username: cookie.get("username"),
         });
+        setMessageContent("");
+        setSelectedFile(null);
+        setFilePreview(null);
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data.message);
+      });
     }
   };
 
@@ -147,24 +151,40 @@ const ChatWindow = () => {
       });
   };
 
+  const getMembersList = async () => {
+    const url = "https://hagnout-backend.onrender.com/rooms/search-room";
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ roomName }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(setMembersList(data[0].members));
+    });
+  }
+
   return (
     <div className="message--container grid grid-cols-12 ">
-      <div className=" col-span-7 h-full room--details--container lg:col-span-9 grid grid-rows-12 ">
-        <div className="top--bar my-auto px-4 row-span-1 flex ">
-          <div className="text-2xl font-bold w-full room--name my-auto">
-            <span className="tag">#</span>
+      <div className=" col-span-12 h-full room--details--container xl:col-span-9 grid grid-rows-12 ">
+
+        <div className="top--bar px-4 h-14 row-span-1 flex justify-between">
+
+          <div className="text-xl font-bold room--name my-auto">
+            <span className="tag"># </span>
             {roomName}
           </div>
 
-          <div className="search--message more--options w-full flex justify-between">
+          <div className="search--message more--options  flex justify-between">
+            <TbPinFilled className="my-auto mr-3 text-5xl" style={{"color": "#DBDEE1"}}/>
+            <IoPeopleSharp  className="my-auto mr-3 text-5xl" style={{"color": "#DBDEE1"}} onClick={() => getMembersList()}/>
             <input
               type="text"
-              className=" my-auto px-3 py-2 text-white"
+              className=" my-auto px-2 py-1 mr-3 text-white"
               placeholder="Search message"
-            />
-            <TbDotsVertical
-              className=" text-3xl my-auto more--options"
-              onClick={togglePopup}
+              style={{"color": "#DBDEE1" }}
             />
 
             {isPopupVisible && (
@@ -185,12 +205,24 @@ const ChatWindow = () => {
                 </ul>
               </div>
             )}
+
+            <RiNeteaseCloudMusicFill className="my-auto text-5xl"
+              style={{
+                "color" : "#DBDEE1"
+              }}
+            />
+            <TbDotsVertical
+              className=" text-5xl my-auto more--options "
+              onClick={togglePopup}
+              style={{"color": "#DBDEE1"}}
+            />
+
           </div>
         </div>
 
         <div
-          className="message--pool row-span-10 p-4 overflow-y-auto"
-          style={{ maxHeight: "83vh" }}
+          className="message--pool -mt-6 row-span-10  overflow-y-auto"
+          style={{ maxHeight: "85.5vh" }}
         >
           <Messages roomid={roomid} className="" />
         </div>
@@ -227,7 +259,7 @@ const ChatWindow = () => {
                 onChange={handleMessageChange}
                 value={messageContent}
                 className="w-full pl-12 px-3 py-2 text-white"
-                placeholder={`#Type your message and hit enter`}
+                placeholder={`Type your message and hit enter`}
               />
               <span
                 className="emoji-picker-icon absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
@@ -248,7 +280,7 @@ const ChatWindow = () => {
         </div>
       </div>
 
-      <div className="col-span-5 lg:col-span-3">
+      <div className="col-span-0 hidden xl:block xl:col-span-3">
         <MusicPlayer />
       </div>
     </div>

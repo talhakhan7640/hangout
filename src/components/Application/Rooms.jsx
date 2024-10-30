@@ -20,6 +20,8 @@ const Rooms = () => {
   const [message, setMessage] = useState("");
   const [joinText, setJoinText] = useState("Join");
   const [fetchComplete, setFetchComplete] = useState(false);
+  const [gif, setGIF] = useState("");
+  const [activeRoomId, setActiveRoomId] = useState("");
 
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
@@ -108,6 +110,10 @@ const Rooms = () => {
 
   const goToChatRoom = (roomid, roomName) => {
     navigate(`room/${roomName}/${roomid}`);
+    getGifForCurrentRoom().then((gifData) => {
+      setGIF(gifData.data.images.original.url);
+      setActiveRoomId(roomid);
+    })
   };
 
   const userLogoutHnadler = async (e) => {
@@ -122,6 +128,13 @@ const Rooms = () => {
     navigate("/");
   };
 
+  const getGifForCurrentRoom = async () => {
+    const response = await fetch("https://api.giphy.com/v1/gifs/random?api_key=Khgc864KVLcr2vHOfKWbnBqdpuMAmue6&tag=anime&rating=g");
+    const data = await response.json();
+    return data;
+  }
+
+  console.log(rooms)
 
 return (
   <div className="rooms-container grid grid-rows-12 w-full overflow-x-auto">
@@ -159,37 +172,53 @@ return (
                 onClick={(e) => {
                   e.stopPropagation();
                   joinRoomHandler(room.roomId);
-                }}
-              >
-                {joinText}
-              </button>
-            </div>
-          </div>
-        ))
-      ) : message ? (
-        <div className="message m-2 p-3">{message}</div>
-      ) : (
-          // Render the rooms component
-          rooms.map((room, index) => (
-            <div
-              key={index}
-              className="room-container"
-              onClick={() => goToChatRoom(room._id, room.roomName)}
-            >
-              <div className="room m-2 p-3 cursor-pointer">{room.roomName}</div>
+                  }}
+                >
+                  {joinText}
+                </button>
+              </div>
             </div>
           ))
-        )}
+        ) : message ? (
+            <div className="message m-2 p-3">{message}</div>
+          ) : (
+              // Render the rooms component
+              rooms.map((room, index) => (
+                <div
+                  key={index}
+                  className="room-container"
+                  onClick={() => goToChatRoom(room._id, room.roomName)}
+
+                >
+                  <div className="room m-2 p-3 cursor-pointer"  style={
+                    activeRoomId === room._id
+                      ? {
+                        backgroundImage: `url(${gif})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        color: 'black',
+                        fontWeight: 700,
+                        fontSize: '18px',
+
+                      }
+                      : {}
+                  }
+
+                  >{room.roomName}</div>
+
+                </div>
+              ))
+            )}
 
 
-            </div>
+      </div>
 
 
 
-    {/* User and Settings */}
-    <div className="flex justify-between p-2 w-full">
-      <div className="username flex items-center">
-<div className=" mt-0 lg:mt-0 profile--picture  h-12 w-12 mr-3 text-white text-2xl flex items-center justify-center">
+      {/* User and Settings */}
+      <div className="flex justify-between p-2 w-full">
+        <div className="username flex items-center">
+          <div className=" mt-0 lg:mt-0 profile--picture  h-12 w-12 mr-3 text-white text-2xl flex items-center justify-center">
             <img
               src={profilePic}
               alt="avatar"

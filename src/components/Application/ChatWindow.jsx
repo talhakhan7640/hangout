@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../assets/styles/ChatWindow.css";
 import { TbDotsVertical } from "react-icons/tb";
@@ -12,6 +12,7 @@ import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { IoPeopleSharp } from "react-icons/io5";
 import { TbPinFilled } from "react-icons/tb";
 import { RiNeteaseCloudMusicFill } from "react-icons/ri";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const ChatWindow = () => {
   const cookie = new Cookies();
@@ -27,6 +28,8 @@ const ChatWindow = () => {
   const [filePreview, setFilePreview] = useState(null);
   const [fileUrl, setFileUrl] = useState("");
   const [membersList, setMembersList] = useState([]);
+  const [isMembersListVisible, setIsMembersListVisible] = useState(false);
+  const [isMusicPlayerVisible, setIsMusicPlayerVisible] = useState(false);
 
   //Toggle popup
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -107,21 +110,21 @@ const ChatWindow = () => {
           roomId: roomid,
         }),
       })
-      .then((response) => {
-        // send real time message to the server
-        socket.emit("msg", {
-          messageContent: messageContent,
-          fileUrl: fileUrlToSend,
-          username: cookie.get("username"),
+        .then((response) => {
+          // send real time message to the server
+          socket.emit("msg", {
+            messageContent: messageContent,
+            fileUrl: fileUrlToSend,
+            username: cookie.get("username"),
+          });
+          setMessageContent("");
+          setSelectedFile(null);
+          setFilePreview(null);
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data.message);
         });
-        setMessageContent("");
-        setSelectedFile(null);
-        setFilePreview(null);
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data.message);
-      });
     }
   };
 
@@ -151,140 +154,358 @@ const ChatWindow = () => {
       });
   };
 
-  const getMembersList = async () => {
-    const url = "https://hagnout-backend.onrender.com/rooms/search-room";
-    await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ roomName }),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(setMembersList(data[0].members));
-    });
-  }
+  const showMembersList = () => {
+    setIsMembersListVisible(!isMembersListVisible);
+    setIsMusicPlayerVisible(false);
+  };
 
-  return (
-    <div className="message--container grid grid-cols-12 ">
-      <div className=" col-span-12 h-full room--details--container xl:col-span-9 grid grid-rows-12 ">
+  const showMusicPlayer = () => {
+    setIsMusicPlayerVisible(!isMusicPlayerVisible);
+    setIsMembersListVisible(false);
+  };
 
-        <div className="top--bar px-4 h-14 row-span-1 flex justify-between">
+  useEffect(() => {
+    const getMembersList = async () => {
+      const url = "https://hagnout-backend.onrender.com/rooms/fetch-members";
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ roomid }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setMembersList(data);
+        });
+    };
 
-          <div className="text-xl font-bold room--name my-auto">
-            <span className="tag"># </span>
-            {roomName}
+    getMembersList();
+  }, [roomName]);
+
+
+return (
+  <div className="message--container grid grid-cols-12">
+    <div className="col-span-12 xl:col-span-9 h-screen flex flex-col">
+      {/* Top Section */}
+      <div className="md:h-14 flex py-2 items-center px-3 md:px-4 justify-between top--bar flex-shrink-0">
+        {/* Room Name on Left */}
+        <div className="text-xl font-bold room--name">
+          <span className="tag"># </span>
+          {roomName}
+        </div>
+
+        {/* Icons on Right */}
+        <div className="search--message more--options flex items-center space-x-3">
+          {/* Icons for Larger Screens */}
+          <TbPinFilled
+            className="my-auto text-5xl hidden md:block"
+            style={{ color: "#DBDEE1" }}
+          />
+          <IoPeopleSharp
+            className="my-auto text-5xl hidden md:block"
+            style={{ color: "#DBDEE1" }}
+            onClick={() => showMembersList()}
+          />
+
+          {/* Search Icon for Mobile */}
+          <div className="block md:hidden">
+            <AiOutlineSearch className="text-2xl" />
           </div>
+          <input
+            type="text"
+            className="hidden md:block my-auto px-2 py-1 text-white "
+            placeholder="Search message"
+            style={{ color: "#DBDEE1" }}
+          />
 
-          <div className="search--message more--options  flex justify-between">
-            <TbPinFilled className="my-auto mr-3 text-5xl" style={{"color": "#DBDEE1"}}/>
-            <IoPeopleSharp  className="my-auto mr-3 text-5xl" style={{"color": "#DBDEE1"}} onClick={() => getMembersList()}/>
-            <input
-              type="text"
-              className=" my-auto px-2 py-1 mr-3 text-white"
-              placeholder="Search message"
-              style={{"color": "#DBDEE1" }}
-            />
+          {/* Music and Menu Icons */}
+          <RiNeteaseCloudMusicFill
+            className="my-auto text-2xl md:text-5xl  xl:hidden"
+            style={{ color: "#DBDEE1" }}
+            onClick={() => showMusicPlayer()}
+          />
+          <TbDotsVertical
+            className="text-2xl md:text-5xl my-auto more--options"
+            onClick={togglePopup}
+            style={{ color: "#DBDEE1" }}
+          />
+        </div>
+      </div>
 
-            {isPopupVisible && (
-              <div className="popup-menu absolute right-12 mt-2 w-48 text-white">
-                <ul>
-                  <li
-                    className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer"
-                    onClick={handleLeaveRoom}
-                  >
-                    Leave Room
-                  </li>
-                  <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">
-                    Invite Friend
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                    Mute Room
-                  </li>
-                </ul>
-              </div>
-            )}
-
-            <RiNeteaseCloudMusicFill className="my-auto text-5xl"
+      {/* Scrollable Middle Section */}
+      <div className="flex-grow overflow-y-auto relative">
+        <div className="absolute right-6 md:right-7 top-0 flex flex-col space-y-4">
+          {isMembersListVisible && (
+            <div
+              className="room--members--list p-4 rounded-md"
               style={{
-                "color" : "#DBDEE1"
+                width: "200px",
+                backgroundColor: "#19191B",
               }}
-            />
-            <TbDotsVertical
-              className=" text-5xl my-auto more--options "
-              onClick={togglePopup}
-              style={{"color": "#DBDEE1"}}
-            />
-
-          </div>
-        </div>
-
-        <div
-          className="message--pool -mt-6 row-span-10  overflow-y-auto"
-          style={{ maxHeight: "85.5vh" }}
-        >
-          <Messages roomid={roomid} className="" />
-        </div>
-
-        <div className="message--input row-span-1 px-4 relative">
-          {filePreview && (
-            <div className="file-preview-container absolute left-0 bottom-16 mb-2 ml-4 p-2 rounded flex items-center">
-              <img
-                src={filePreview}
-                alt="File preview"
-                className="file-preview-image w-48 h-48 object-cover rounded"
-              />
-              <button
-                onClick={handleRemoveFile}
-                className="remove-file-button ml-2 text-white p-1 my-0"
-              >
-                ✕
-              </button>
+            >
+              {membersList.map((member, idx) => (
+                <div key={idx} className="flex items-center mb-2">
+                  <div className="profile--picture rounded-full overflow-hidden h-10 w-10 mr-3 bg-blue-500 text-white flex items-center justify-center">
+                    <img
+                      src={member.profilePic}
+                      alt="avatar"
+                      className="w-full h-full object-cover user--profile--picture"
+                    />
+                  </div>
+                  <span className="member--name text-white">
+                    {member.username}
+                  </span>
+                </div>
+              ))}
             </div>
           )}
-          <div className="message--field w-full py-4">
-            <form action="" onSubmit={handleSubmitMessage}>
-              <span className="file-attach-icon absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer">
-                📎
-                <input
-                  type="file"
-                  className="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full"
-                  onChange={handleFileAttach}
-                />
-              </span>
 
+          {isMusicPlayerVisible && (
+            <div className="music-player bg-gray-800  rounded-md shadow-md text-white">
+              <MusicPlayer />
+            </div>
+          )}
+        </div>
+
+        {/* Messages Section */}
+        <Messages roomid={roomid} />
+      </div>
+
+      {/* Bottom Section */}
+      <div className="message--input relative h-18 py-4 flex items-center justify-center">
+        {/* File Preview (Conditional) */}
+        {filePreview && (
+          <div className="file-preview-container absolute bottom-20 left-4 mb-2 p-2 rounded flex items-center bg-gray-800 border border-gray-700">
+            <img
+              src={filePreview}
+              alt="File preview"
+              className="file-preview-image w-32 h-32 object-cover rounded"
+            />
+            <button
+              onClick={handleRemoveFile}
+              className="remove-file-button ml-2 text-white p-1 bg-red-500 rounded-full"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* Message Field */}
+        <div className="message--field w-full px-4 text-white flex items-center relative">
+          <form
+            action=""
+            onSubmit={handleSubmitMessage}
+            className="w-full flex items-center space-x-3"
+          >
+            {/* File Attach Icon */}
+            <label className="file-attach-icon cursor-pointer relative">
+              📎
               <input
-                type="text"
-                onChange={handleMessageChange}
-                value={messageContent}
-                className="w-full pl-12 px-3 py-2 text-white"
-                placeholder={`Type your message and hit enter`}
+                type="file"
+                className="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full"
+                onChange={handleFileAttach}
               />
-              <span
-                className="emoji-picker-icon absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={toggleEmojiPicker}
-              >
-                😀
-              </span>
-            </form>
+            </label>
+
+            {/* Message Input */}
+            <input
+              type="text"
+              onChange={handleMessageChange}
+              value={messageContent}
+              className="w-full px-3 py-2 text-white placeholder-gray-400"
+              placeholder="Type your message and hit enter"
+            />
+
+            {/* Emoji Picker Icon */}
+            <span
+              className="emoji-picker-icon cursor-pointer"
+              onClick={toggleEmojiPicker}
+            >
+              😀
+            </span>
+
+            {/* Emoji Picker Dropdown */}
             {showEmojiPicker && (
-              <div className="emoji-picker-container absolute right-0 bottom-full mb-2">
+              <div className="emoji-picker-container absolute bottom-full right-0 mb-2">
                 <EmojiPicker
                   theme="dark"
                   onEmojiClick={(e) => appendEmoji(e)}
                 />
               </div>
             )}
-          </div>
+          </form>
         </div>
       </div>
-
-      <div className="col-span-0 hidden xl:block xl:col-span-3">
-        <MusicPlayer />
-      </div>
     </div>
-  );
+
+    {/* Right Sidebar - Visible on Large Screens */}
+    <div className="hidden xl:block xl:col-span-3">
+      <MusicPlayer />
+    </div>
+  </div>
+);
+
+
+  // return (
+  //   <div className="message--container grid grid-cols-12 ">
+  //     <div className="col-span-12 xl:col-span-9 h-screen flex flex-col">
+  //       {/* Top Section */}
+  //       <div className=" md:h-14 flex py-2 items-center px-3 md:px-4 justify-between top--bar flex-shrink-0">
+  //         {/* Room Name on Left */}
+  //         <div className="text-xl font-bold room--name">
+  //           <span className="tag"># </span>
+  //           {roomName}
+  //         </div>
+
+  //         {/* Icons on Right */}
+  //         <div className="search--message more--options flex items-center space-x-3">
+  //           {/* Search Icon for Mobile, Search Input for Larger Screens */}
+  //           {/* Icons that only appear on larger screens */}
+  //           <TbPinFilled
+  //             className="my-auto text-5xl hidden md:block"
+  //             style={{ color: "#DBDEE1" }}
+  //           />
+  //           <IoPeopleSharp
+  //             className="my-auto text-5xl hidden md:block"
+  //             style={{ color: "#DBDEE1" }}
+  //             onClick={() => showMembersList()}
+  //           />
+
+  //           <div className="block md:hidden">
+  //             <AiOutlineSearch className="text-2xl" />
+  //           </div>
+  //           <input
+  //             type="text"
+  //             className="hidden md:block my-auto px-2 py-1 text-white"
+  //             placeholder="Search message"
+  //             style={{ color: "#DBDEE1" }}
+  //           />
+
+  //           {/* Music and Menu Icons, Always Visible */}
+  //           <RiNeteaseCloudMusicFill
+  //             className="my-auto text-2xl md:text-5xl"
+  //             style={{ color: "#DBDEE1" }}
+  //             onClick={() => showMusicPlayer()}
+  //           />
+  //           <TbDotsVertical
+  //             className="pr-0 text-2xl md:text-5xl my-auto more--options"
+  //             onClick={togglePopup}
+  //             style={{ color: "#DBDEE1" }}
+  //           />
+  //         </div>
+  //       </div>
+
+  //       {/* Scrollable Middle Section */}
+  //       <div className="flex-grow overflow-y-auto">
+  //         <div className="absolute right-8  flex flex-col items-end space-y-4">
+  //           {isMembersListVisible && (
+  //             <div
+  //               className="room--members--list p-4"
+  //               style={{
+  //                 height: "",
+  //                 width: "200px",
+  //                 backgroundColor: "#19191B",
+  //               }}
+  //             >
+  //               {membersList.map((member, idx) => (
+  //                 <div className="flex">
+  //                   <div className=" mt-2 mb-2 profile--picture rounded-full overflow-hidden h-10 w-10 mr-3 bg-blue-500 text-white flex items-center justify-center flex-shrink-0">
+  //                     <img
+  //                       src={member.profilePic}
+  //                       alt="avatar"
+  //                       className="w-full h-full object-cover user--profile--picture"
+  //                     />
+  //                   </div>
+
+  //                   <span className="member--name my-auto">
+  //                     {member.username}
+  //                   </span>
+  //                 </div>
+  //               ))}
+  //             </div>
+  //           )}
+  //         </div>
+
+  //         {isMusicPlayerVisible && (
+  //           <div className="absolute right-0">Music Player</div>
+  //         )}
+
+  //         <Messages roomid={roomid} className="" />
+  //       </div>
+
+  //       {/* Bottom Section */}
+  //       <div className="message--input relative h-18 py-4 flex items-center justify-center">
+  //         {/* File Preview (Conditional) */}
+  //         {filePreview && (
+  //           <div className="file-preview-container absolute bottom-20 left-4 mb-2 p-2 rounded flex items-center bg-gray-800 border border-gray-700">
+  //             <img
+  //               src={filePreview}
+  //               alt="File preview"
+  //               className="file-preview-image w-32 h-32 object-cover rounded"
+  //             />
+  //             <button
+  //               onClick={handleRemoveFile}
+  //               className="remove-file-button ml-2 text-white p-1 bg-red-500 rounded-full"
+  //             >
+  //               ✕
+  //             </button>
+  //           </div>
+  //         )}
+
+  //         {/* Message Field */}
+  //         <div className="message--field  w-full px-4  text-white flex items-center relative">
+  //           <form
+  //             action=""
+  //             onSubmit={handleSubmitMessage}
+  //             className="w-full flex items-center space-x-3"
+  //           >
+  //             {/* File Attach Icon */}
+  //             <label className="file-attach-icon cursor-pointer relative">
+  //               📎
+  //               <input
+  //                 type="file"
+  //                 className="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full"
+  //                 onChange={handleFileAttach}
+  //               />
+  //             </label>
+
+  //             {/* Message Input */}
+  //             <input
+  //               type="text"
+  //               onChange={handleMessageChange}
+  //               value={messageContent}
+  //               className="w-full px-3 py-2 text-white rounded-lg placeholder-gray-400"
+  //               placeholder="Type your message and hit enter"
+  //             />
+
+  //             {/* Emoji Picker Icon */}
+  //             <span
+  //               className="emoji-picker-icon cursor-pointer"
+  //               onClick={toggleEmojiPicker}
+  //             >
+  //               😀
+  //             </span>
+
+  //             {/* Emoji Picker Dropdown */}
+  //             {showEmojiPicker && (
+  //               <div className="emoji-picker-container absolute bottom-full right-0 ">
+  //                 <EmojiPicker
+  //                   theme="dark"
+  //                   onEmojiClick={(e) => appendEmoji(e)}
+  //                 />
+  //               </div>
+  //             )}
+  //           </form>
+  //         </div>
+  //       </div>
+  //     </div>
+
+  //     <div className="hidden xl:block xl:col-span-3">
+  //       <MusicPlayer />
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default ChatWindow;

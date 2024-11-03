@@ -65,51 +65,65 @@ const Messages = ({ roomid }) => {
   };
 
   const lastUser = messageContainer[messageContainer.length - 1];
-  console.log(lastUser)
+  console.log(lastUser);
 
- return (
-  <div className="message--container">
-    {messageContainer.map((msg, idx) => {
-      const isNewSender =
-        idx === 0 || messageContainer[idx - 1].username !== msg.username;
+  return (
+    <div className="message--container">
+      {messageContainer.map((msg, idx) => {
+        const isNewSender =
+          idx === 0 || messageContainer[idx - 1].username !== msg.username;
 
         return (
-          <div className="message-container mb-1 mt-1 px-4" key={idx}>
+          <div className="message-container mb-1 mt-1 px-3 md:px-4" key={idx}>
             <div className="profile--username flex items-start">
               {isNewSender && (
                 <div className="mt-2 profile--picture rounded-full overflow-hidden h-10 w-10 mr-3 bg-blue-500 text-white flex items-center justify-center flex-shrink-0">
-                  <img src={msg.profilePic} alt="avatar" className="w-full h-full object-cover user--profile--picture" />
+                  <img
+                    src={msg.profilePic}
+                    alt="avatar"
+                    className="w-full h-full object-cover user--profile--picture"
+                  />
                 </div>
               )}
               <div className="my-auto ">
                 {isNewSender && (
                   <div className="user-username pl-1 my-auto mt-1 flex">
-                    <span className="font-normal username-msg">{msg.username}</span>
+                    <span className="font-normal username-msg">
+                      {msg.username}
+                    </span>
                     <span className="ml-4 text-sm my-auto timestamp">
                       {moment(msg.timestamp).format("MMMM Do YYYY, h:mm a")}
                     </span>
                   </div>
                 )}
                 {msg.fileUrl && (
-                  <div className="file">
-                    <a href={msg.fileUrl} target="_">
-                      <img src={msg.fileUrl} className={`chat-image ${isNewSender ? 'pl-1' : 'ml-14'} mt-1 mb-1`} alt="file" height={300} width={550} />
+                  <div className={`file ${isNewSender ? "pl-1" : "pl-14"}` }>
+                    <a
+                      href={msg.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={msg.fileUrl}
+                        className={`mt-1 mb-1 rounded-lg w-full sm:w-96 md:w-1/2 lg:w-2/3 xl:w-2/6 object-cover`}
+                        style={{
+                        }}
+                        alt="file"
+                      />
                     </a>
                   </div>
                 )}
-                <div className={`message ${isNewSender ? 'pl-1' : 'pl-14'}`} >
-                  {linkify(msg.messageContent)}
-                </div> 
 
+                <div className={`message ${isNewSender ? "pl-1" : "pl-14"}`}>
+                  {linkify(msg.messageContent)}
+                </div>
               </div>
             </div>
           </div>
         );
-    })}
-  </div>
-);
-  
-
- };
+      })}
+    </div>
+  );
+};
 
 export default Messages;

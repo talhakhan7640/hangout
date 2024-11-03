@@ -35,6 +35,15 @@
   font-size: 15px;
   color: #DBDEE1;
 }
+@media (max-width: 480px){
+  .message {
+    font-size: 14px;
+  } 
+  .username-msg {
+    font-size: 14px;
+  }
+}
+
 .chat-image {
   max-width: 500px; /* Adjust this max width to your preference */
   max-height: 300px; /* Adjust this max height to your preference */

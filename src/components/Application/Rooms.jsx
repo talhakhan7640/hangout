@@ -58,6 +58,23 @@ const Rooms = () => {
         setRooms(data);
         setFetchComplete(true);
       });
+
+    const reverseRoomId = (roomid) => {
+      var splitRoomId = roomid.split("");
+
+      var reverseRoomId = splitRoomId.reverse();
+
+      var joinRoomId = reverseRoomId.join("");
+      
+      return joinRoomId;
+    }
+
+      let currentRoomId = "";
+      for(var i = window.location.href.length - 1; i >= window.location.href.length - 24; i--) {
+        currentRoomId+= window.location.href[i];
+      }
+
+    setGifForCurrentRoom(reverseRoomId(currentRoomId));
   }, [username]);
 
   // search room
@@ -110,10 +127,7 @@ const Rooms = () => {
 
   const goToChatRoom = (roomid, roomName) => {
     navigate(`room/${roomName}/${roomid}`);
-    getGifForCurrentRoom().then((gifData) => {
-      setGIF(gifData.data.images.original.url);
-      setActiveRoomId(roomid);
-    })
+    setGifForCurrentRoom(roomid);
   };
 
   const userLogoutHnadler = async (e) => {
@@ -129,17 +143,56 @@ const Rooms = () => {
   };
 
   const getGifForCurrentRoom = async () => {
-    const response = await fetch("https://api.giphy.com/v1/gifs/random?api_key=Khgc864KVLcr2vHOfKWbnBqdpuMAmue6&tag=anime&rating=g");
+    const response = await fetch(
+      "https://api.giphy.com/v1/gifs/random?api_key=Khgc864KVLcr2vHOfKWbnBqdpuMAmue6&tag=anime&rating=g"
+    );
     const data = await response.json();
     return data;
+  };
+
+  const setGifForCurrentRoom = (roomid) => {
+    getGifForCurrentRoom().then((gifData) => {
+      setGIF(gifData.data.images.original.url);
+      setActiveRoomId(roomid);
+    });
   }
 
-  console.log(rooms)
+  const getRandomColor = (index) => {
+    const colors = ["#F87171", "#60A5FA", "#34D399", "#FBBF24", "#A78BFA"];
+    return colors[index % colors.length];
+  };
 
-return (
-  <div className="rooms-container grid grid-rows-12 w-full overflow-x-auto">
-    {/* Search Room */}
-    <div className="search--room row-span-1  my-auto">
+  return (
+    <div className="rooms-container grid grid-rows-12 w-full overflow-x-auto">
+      <div className="   lg:hidden row-span-11">
+        {rooms.map((room, index) => (
+          <div
+            key={index}
+            className=" rounded-full mt-4 w-14 h-14 mx-auto flex items-center justify-center"
+            onClick={() => goToChatRoom(room._id, room.roomName)}
+            style={{
+              backgroundColor: getRandomColor(index),
+            }}
+          >
+            <div className=" cursor-pointer my-auto font-semibold text-xl">
+              {room.roomName[0].toUpperCase()}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className=" lg:hidden flex justify-center">
+        <div className=" w-14 h-14 bg-blue-600 my-auto rounded-full">
+          <img
+            src={profilePic}
+            alt="avatar"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+
+      {/* Search Room */}
+      <div className="hidden lg:block search--room row-span-1  my-auto">
         <form
           method="post"
           className="search--room p-2"
@@ -155,23 +208,22 @@ return (
         </form>
       </div>
 
-    
-    {/* Rooms List */}
-    <div className="rooms row-span-10 overflow-x-auto w-full">
-      {searchedRooms.length > 0 ? (
-        searchedRooms.map((room, index) => (
-          <div
-            key={index}
-            className="w-full"
-            onClick={() => goToChatRoom(room._id, room.roomName)}
-          >
-            <div className="join--room flex justify-between m-2 p-2 border rounded-md">
-              <div className="room px-1 my-auto">{room.roomName}</div>
-              <button
-                className="join--button py-1 px-4 border rounded-md"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  joinRoomHandler(room.roomId);
+      {/* Rooms List */}
+      <div className="rooms hidden lg:block lg:row-span-10 overflow-x-auto w-full">
+        {searchedRooms.length > 0 ? (
+          searchedRooms.map((room, index) => (
+            <div
+              key={index}
+              className="w-full"
+              onClick={() => goToChatRoom(room._id, room.roomName)}
+            >
+              <div className="join--room flex justify-between m-2 p-2 border rounded-md">
+                <div className="room px-1 my-auto">{room.roomName}</div>
+                <button
+                  className="join--button py-1 px-4 border rounded-md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    joinRoomHandler(room.roomId);
                   }}
                 >
                   {joinText}
@@ -180,43 +232,39 @@ return (
             </div>
           ))
         ) : message ? (
-            <div className="message m-2 p-3">{message}</div>
-          ) : (
-              // Render the rooms component
-              rooms.map((room, index) => (
-                <div
-                  key={index}
-                  className="room-container"
-                  onClick={() => goToChatRoom(room._id, room.roomName)}
-
-                >
-                  <div className="room m-2 p-3 cursor-pointer"  style={
-                    activeRoomId === room._id
-                      ? {
+          <div className="message m-2 p-3">{message}</div>
+        ) : (
+          // Render the rooms component
+          rooms.map((room, index) => (
+            <div
+              key={index}
+              className="room-container"
+              onClick={() => goToChatRoom(room._id, room.roomName)}
+            >
+              <div
+                className="room m-2 p-3 cursor-pointer"
+                style={
+                  activeRoomId === room._id
+                    ? {
                         backgroundImage: `url(${gif})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        color: 'black',
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        color: "black",
                         fontWeight: 700,
-                        fontSize: '18px',
-
+                        fontSize: "18px",
                       }
-                      : {}
-                  }
-
-                  >{room.roomName}</div>
-
-                </div>
-              ))
-            )}
-
-
+                    : {}
+                }
+              >
+                {room.roomName}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
-
-
       {/* User and Settings */}
-      <div className="flex justify-between p-2 w-full">
+      <div className=" hidden lg:flex lg:block justify-between p-2 w-full">
         <div className="username flex items-center">
           <div className=" mt-0 lg:mt-0 profile--picture  h-12 w-12 mr-3 text-white text-2xl flex items-center justify-center">
             <img
@@ -226,45 +274,43 @@ return (
             />
           </div>
 
-        <div className="username my-auto">{username}</div>
-      </div>
+          <div className="username my-auto">{username}</div>
+        </div>
 
-      <div className="add--settings flex items-center space-x-4">
-        <VscDiffAdded
-          className="text-3xl cursor-pointer"
-          onClick={() => setShowCreateRoomModal(true)}
-        />
-        {showCreateRoomModal &&
-          createPortal(
-            <CreateRoom onClose={() => setShowCreateRoomModal(false)} />,
-            document.body
+        <div className="add--settings flex items-center space-x-4">
+          <VscDiffAdded
+            className="text-3xl cursor-pointer"
+            onClick={() => setShowCreateRoomModal(true)}
+          />
+          {showCreateRoomModal &&
+            createPortal(
+              <CreateRoom onClose={() => setShowCreateRoomModal(false)} />,
+              document.body
+            )}
+
+          <VscSettings
+            className="text-3xl cursor-pointer"
+            onClick={togglePopup}
+          />
+          {isSettingPopupVisible && (
+            <div className="popup-menu absolute bottom-20 left-12 w-48 text-white bg-gray-800 rounded-md shadow-lg">
+              <ul>
+                <button
+                  className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer w-full text-left"
+                  onClick={userLogoutHnadler}
+                >
+                  Sign Out
+                </button>
+                <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">
+                  Settings
+                </li>
+              </ul>
+            </div>
           )}
-
-        <VscSettings
-          className="text-3xl cursor-pointer"
-          onClick={togglePopup}
-        />
-        {isSettingPopupVisible && (
-          <div className="popup-menu absolute bottom-20 left-12 w-48 text-white bg-gray-800 rounded-md shadow-lg">
-            <ul>
-              <button
-                className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer w-full text-left"
-                onClick={userLogoutHnadler}
-              >
-                Sign Out
-              </button>
-              <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">
-                Settings
-              </li>
-            </ul>
-          </div>
-        )}
+        </div>
       </div>
     </div>
-  </div>
-);
-
-
+  );
 };
 
 export default Rooms;

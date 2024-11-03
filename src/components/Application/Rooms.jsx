@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { VscDiffAdded, VscSettings } from "react-icons/vsc";
 import { CiSettings } from "react-icons/ci";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import "../../assets/styles/Rooms.css";
@@ -21,8 +20,7 @@ const Rooms = () => {
   const [searchedRooms, setSearchedRooms] = useState([]);
   const [message, setMessage] = useState("");
   const [joinText, setJoinText] = useState("Join");
-  const [fetchComplete, setFetchComplete] = useState(false);
-  const [gif, setGIF] = useState("");
+    const [gif, setGIF] = useState("");
   const [activeRoomId, setActiveRoomId] = useState("");
 
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
@@ -58,7 +56,6 @@ const Rooms = () => {
       .then((response) => response.json())
       .then((data) => {
         setRooms(data);
-        setFetchComplete(true);
       });
 
     const reverseRoomId = (roomid) => {
@@ -154,8 +151,8 @@ const Rooms = () => {
 
   const setGifForCurrentRoom = (roomid) => {
      getGifForCurrentRoom().then((gifData) => {
-      //setGIF(gifData.data.images.original.url);
-      //setActiveRoomId(roomid);
+      setGIF(gifData.data.images.original.url);
+      setActiveRoomId(roomid);
     });
   }
 

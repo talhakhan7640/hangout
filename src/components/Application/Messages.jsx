@@ -65,7 +65,29 @@ const Messages = ({ roomid }) => {
   };
 
   const lastUser = messageContainer[messageContainer.length - 1];
-  console.log(lastUser);
+  
+  const getRandomColor = (index) => {
+    const colors = [
+    "#F87171", // red
+    "#60A5FA", // blue
+    "#34D399", // green
+    "#FBBF24", // yellow
+    "#A78BFA", // purple
+    "#FF79C6", // pink (VSCode-inspired)
+    "#8BE9FD", // cyan (VSCode-inspired)
+    "#BD93F9", // light purple (Discord-inspired)
+    "#FFB86C", // orange (Discord-inspired)
+    "#50FA7B", // bright green (Discord-inspired)
+    "#FF5555", // bold red (Discord-inspired)
+    "#6272A4", // VSCode dark blue
+    "#FFFA65", // bright yellow
+    "#8A8AFF", // indigo
+    "#6EE7B7", // teal green
+    "#B0E57C", // light lime green
+    "#E879F9", // fuchsia
+  ];
+    return colors[index % colors.length];
+  };
 
   return (
     <div className="message--container">
@@ -88,7 +110,9 @@ const Messages = ({ roomid }) => {
               <div className="my-auto ">
                 {isNewSender && (
                   <div className="user-username pl-1 my-auto mt-1 flex">
-                    <span className="font-normal username-msg">
+                    <span className="font-normal username-msg" style={{
+                      color : getRandomColor(Math.floor(Math.random() * 17))
+                    }}>
                       {msg.username}
                     </span>
                     <span className="ml-4 text-sm my-auto timestamp">

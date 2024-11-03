@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { VscDiffAdded, VscSettings } from "react-icons/vsc";
+import { CiSettings } from "react-icons/ci";
+import { IoIosAddCircleOutline } from "react-icons/io";
 import "../../assets/styles/Rooms.css";
 import CreateRoom from "./CreateRoom";
 import { createPortal } from "react-dom";
@@ -151,9 +153,9 @@ const Rooms = () => {
   };
 
   const setGifForCurrentRoom = (roomid) => {
-    getGifForCurrentRoom().then((gifData) => {
-      setGIF(gifData.data.images.original.url);
-      setActiveRoomId(roomid);
+     getGifForCurrentRoom().then((gifData) => {
+      //setGIF(gifData.data.images.original.url);
+      //setActiveRoomId(roomid);
     });
   }
 
@@ -163,39 +165,12 @@ const Rooms = () => {
   };
 
   return (
-    <div className="rooms-container grid grid-rows-12 w-full overflow-x-auto">
-      <div className="   lg:hidden row-span-11">
-        {rooms.map((room, index) => (
-          <div
-            key={index}
-            className=" rounded-full mt-4 w-14 h-14 mx-auto flex items-center justify-center"
-            onClick={() => goToChatRoom(room._id, room.roomName)}
-            style={{
-              backgroundColor: getRandomColor(index),
-            }}
-          >
-            <div className=" cursor-pointer my-auto font-semibold text-xl">
-              {room.roomName[0].toUpperCase()}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className=" lg:hidden flex justify-center">
-        <div className=" w-14 h-14 bg-blue-600 my-auto rounded-full">
-          <img
-            src={profilePic}
-            alt="avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      {/* Search Room */}
-      <div className="hidden lg:block search--room row-span-1  my-auto">
+    <div className="rooms-container h-screen flex flex-col">
+      {/* Top Section */}
+      <div className="h-16 w-full my-auto flex items-center justify-center flex-shrink-0">
         <form
           method="post"
-          className="search--room p-2"
+          className="search--room p-2 w-full"
           onSubmit={handleSearchRoom}
         >
           <input
@@ -206,10 +181,11 @@ const Rooms = () => {
             className="px-3"
           />
         </form>
+
       </div>
 
-      {/* Rooms List */}
-      <div className="rooms hidden lg:block lg:row-span-10 overflow-x-auto w-full">
+      {/* Scrollable Middle Section */}
+      <div className="flex-grow overflow-y-auto ">
         {searchedRooms.length > 0 ? (
           searchedRooms.map((room, index) => (
             <div
@@ -232,85 +208,69 @@ const Rooms = () => {
             </div>
           ))
         ) : message ? (
-          <div className="message m-2 p-3">{message}</div>
-        ) : (
-          // Render the rooms component
-          rooms.map((room, index) => (
-            <div
-              key={index}
-              className="room-container"
-              onClick={() => goToChatRoom(room._id, room.roomName)}
-            >
-              <div
-                className="room m-2 p-3 cursor-pointer"
-                style={
-                  activeRoomId === room._id
-                    ? {
-                        backgroundImage: `url(${gif})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        color: "black",
-                        fontWeight: 700,
-                        fontSize: "18px",
-                      }
-                    : {}
-                }
-              >
-                {room.roomName}
-              </div>
-            </div>
-          ))
-        )}
+            <div className="message m-2 p-3">{message}</div>
+          ) : (
+              // Render the rooms component
+              rooms.map((room, index) => (
+                <div
+                  key={index}
+                  className="room-container"
+                  onClick={() => goToChatRoom(room._id, room.roomName)}
+                >
+                  <div
+                    className="room m-2 p-3 cursor-pointer"
+                    style={
+                      activeRoomId === room._id
+                        ? {
+                          backgroundImage: `url(${gif})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          color: "black",
+                          fontWeight: 700,
+                          fontSize: "18px",
+                        }
+                        : {}
+                    }
+                  >
+                    {room.roomName}
+                  </div>
+                </div>
+              ))
+            )}
+
       </div>
 
-      {/* User and Settings */}
-      <div className=" hidden lg:flex lg:block justify-between p-2 w-full">
-        <div className="username flex items-center">
-          <div className=" mt-0 lg:mt-0 profile--picture  h-12 w-12 mr-3 text-white text-2xl flex items-center justify-center">
+      {/* Bottom Section */}
+      <div className="h-12 flex flex-shrink-0 px-2 bg-[#2e3333]">
+        <div className="profile--username px-1 flex  items-center">
+          <div className="profile w-9 h-9 bg-blue-600 rounded-full">
             <img
               src={profilePic}
               alt="avatar"
               className="w-full h-full object-cover"
             />
           </div>
+          <div className="username px-2 font-normal text-[15px]">
+            <span>{username}</span>
+          </div>
+        </div> 
 
-          <div className="username my-auto">{username}</div>
-        </div>
-
-        <div className="add--settings flex items-center space-x-4">
-          <VscDiffAdded
-            className="text-3xl cursor-pointer"
-            onClick={() => setShowCreateRoomModal(true)}
-          />
-          {showCreateRoomModal &&
-            createPortal(
-              <CreateRoom onClose={() => setShowCreateRoomModal(false)} />,
-              document.body
-            )}
-
-          <VscSettings
-            className="text-3xl cursor-pointer"
-            onClick={togglePopup}
-          />
-          {isSettingPopupVisible && (
-            <div className="popup-menu absolute bottom-20 left-12 w-48 text-white bg-gray-800 rounded-md shadow-lg">
-              <ul>
-                <button
-                  className="px-4 py-2 bg-red-800 hover:bg-red-700 cursor-pointer w-full text-left"
-                  onClick={userLogoutHnadler}
-                >
-                  Sign Out
-                </button>
-                <li className="px-4 py-2 hover:bg-green-700 cursor-pointer">
-                  Settings
-                </li>
-              </ul>
-            </div>
-          )}
+        <div className="add--room--settings flex items-center">
+          <div className="add--room px-1 cursor-pointer">
+            <IoIosAddCircleOutline className="text-3xl" onClick={() => setShowCreateRoomModal(true)}/>
+            {showCreateRoomModal &&
+              createPortal(
+                <CreateRoom onClose={() => setShowCreateRoomModal(false)} />,
+                document.body
+              )}
+          </div>
+          <div className="settings px-1 cursor-pointer">
+            <CiSettings className="text-3xl text-white"/>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default Rooms;

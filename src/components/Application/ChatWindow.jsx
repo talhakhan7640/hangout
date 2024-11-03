@@ -262,7 +262,7 @@ return (
           )}
 
           {isMusicPlayerVisible && (
-            <div className="music-player bg-gray-800  rounded-md shadow-md text-white">
+              <div className="music-player px-2  rounded-md shadow-md text-white">
               <MusicPlayer />
             </div>
           )}

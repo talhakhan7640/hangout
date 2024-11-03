@@ -39,12 +39,19 @@ const Index = () => {
             {outlet ? (
               <Outlet />
             ) : (
-              <div className="select--room--message flex justify-center align-center ">
-                <h1 className="">Select room to start conversation</h1>
-              </div>
+                <div className="select--room--message flex justify-center w-full">
+                  {/* Display Rooms only on mobile */}
+                  <div className="block md:hidden w-full">
+                    <Rooms />
+                  </div>
+
+                  {/* Show prompt only on desktop */}
+                  <h1 className="hidden md:block">Select room to start conversation</h1>
+                </div>
             )}
           </div>
         </div>
+
       </div>
     );
   }

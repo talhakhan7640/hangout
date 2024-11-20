@@ -64,8 +64,6 @@ const Messages = ({ roomid }) => {
     );
   };
 
-  const lastUser = messageContainer[messageContainer.length - 1];
-  
   const getRandomColor = (index) => {
     const colors = [
     "#F87171", // red
@@ -110,9 +108,7 @@ const Messages = ({ roomid }) => {
               <div className="my-auto ">
                 {isNewSender && (
                   <div className="user-username pl-1 my-auto mt-1 flex">
-                    <span className="font-normal username-msg" style={{
-                      color : getRandomColor(Math.floor(Math.random() * 17))
-                    }}>
+                    <span className="font-normal username-msg">
                       {msg.username}
                     </span>
                     <span className="ml-4 text-sm my-auto timestamp">

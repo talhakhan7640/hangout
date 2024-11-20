@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CiSettings } from "react-icons/ci";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { BiSolidMicrophone, BiSolidMicrophoneOff } from "react-icons/bi";
 import "../../assets/styles/Rooms.css";
 import CreateRoom from "./CreateRoom";
 import { createPortal } from "react-dom";
@@ -30,6 +31,13 @@ const Rooms = () => {
 
   //Toggle setting popup
   const [isSettingPopupVisible, setIsSettingPopupVisible] = useState(false);
+
+  // Toggle microphone
+  const [isMute, setIsMute]  = useState(false);
+
+  const toggleMicrophone = () => {
+    setIsMute(!isMute);
+  }
 
   const togglePopup = () => {
     setIsSettingPopupVisible(!isSettingPopupVisible);
@@ -253,6 +261,13 @@ const Rooms = () => {
         </div> 
 
         <div className="add--room--settings flex items-center">
+          <div className="microphone-status px-1">
+            {isMute ? (
+              <BiSolidMicrophone className="text-3xl " onClick={() => toggleMicrophone()}/>
+            ): (
+                <BiSolidMicrophoneOff className="text-3xl" onClick={()=> toggleMicrophone()}/>
+            )}
+          </div>
           <div className="add--room px-1 cursor-pointer">
             <IoIosAddCircleOutline className="text-3xl" onClick={() => setShowCreateRoomModal(true)}/>
             {showCreateRoomModal &&

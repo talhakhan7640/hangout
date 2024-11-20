@@ -50,10 +50,10 @@ const MusicPlayer = () => {
         trackName: fileName,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        window.location.reload();
-      });
+    .then((response) => response.json())
+    .then(() => {
+      window.location.reload();
+    });
   };
 
   // Tracks controllers
@@ -147,26 +147,26 @@ const MusicPlayer = () => {
     <div className="music-player h-screen flex flex-col">
       {/* Top Section */}
       <div className=" h-16 flex items-center justify-center flex-shrink-0">
-       
-          <div className="music--player--top--bar w-full">
-            <div className="flex">
-              <form method="post" className="search--music p-2 w-full">
-                <input type="text" placeholder="Search music" className="px-3" />
-              </form>
-              <div className="my-auto ml-2 upload--song">
-                <label htmlFor="file--upload">
-                  <MdOutlineDriveFolderUpload className="text-3xl mr-2" />
-                </label>
-                <input
-                  id="file--upload"
-                  onChange={handleFileChange}
-                  type="file"
-                  className="file--upload--button"
-                />
-              </div>
+
+        <div className="music--player--top--bar w-full">
+          <div className="flex">
+            <form method="post" className="search--music p-2 w-full">
+              <input type="text" placeholder="Search music" className="px-3" />
+            </form>
+            <div className="my-auto ml-2 upload--song">
+              <label htmlFor="file--upload">
+                <MdOutlineDriveFolderUpload className="text-3xl mr-2" />
+              </label>
+              <input
+                id="file--upload"
+                onChange={handleFileChange}
+                type="file"
+                className="file--upload--button"
+              />
             </div>
           </div>
-      
+        </div>
+
       </div>
 
       {/* Scrollable Middle Section */}
@@ -219,9 +219,7 @@ Math.floor(Math.random() * (50 - 1 + 1)) + 1
         <div className="track--cover--name flex">
           <div className="track--cover h-16 w-16 bg-black my-auto">
             <img
-              src={`https://loremflickr.com/200/200?random=${
-Math.floor(Math.random() * (50 - 1 + 1)) + 1
-}`}
+              src={`https://loremflickr.com/200/200?random=${Math.floor(Math.random() * (50 - 1 + 1)) + 1}`}
               w-full
               h-full
               alt="cover--image"
@@ -276,134 +274,6 @@ Math.floor(Math.random() * (50 - 1 + 1)) + 1
     </div>
 
   )
-
-  return (
-    <div className="music-player grid grid-rows-12 h-full w-full">
-      <div className="search--room row-span-1 my-auto">
-        <div className="music--player--top--bar xl:p-2">
-          <div className="flex">
-            <form method="post" className="search--music p-2 w-full">
-              <input type="text" placeholder="Search music" className="px-3" />
-            </form>
-            <div className="my-auto ml-2 upload--song">
-              <label htmlFor="file--upload">
-                <MdOutlineDriveFolderUpload className="text-3xl mr-2" />
-              </label>
-              <input
-                id="file--upload"
-                onChange={handleFileChange}
-                type="file"
-                className="file--upload--button"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="tracks--list row-span-9 " tyle={{ maxHeight: "83vh" }}>
-        {/* Added overflow-auto to prevent content overflow */}
-        {tracks.map((track, index) => (
-          <div key={index}>
-            <div className="flex justify-between track px-4 my-4">
-              <div className="grid grid-cols-12 gap-4">
-                <div className="my-auto col-span-1">
-                  {runningTrack === track.trackName && isPlaying ? (
-                    <FaPause className="text-3xl" onClick={pauseTrack} />
-                  ) : (
-                    <FaPlay
-                      className="text-xl"
-                      onClick={() =>
-                        changeCurrentTrack(track.trackName, track.trackUrl)
-                      }
-                    />
-                  )}
-                </div>
-                <div className="control--name col-span-11 flex mx-3 w-full">
-                  <div className="control">
-                    <div className="bg-black w-16 h-16">
-                      <img
-                        src={`https://loremflickr.com/200/200?random=${
-                          Math.floor(Math.random() * (50 - 1 + 1)) + 1
-                        }`}
-                        w-full
-                        h-full
-                        alt="cover--image"
-                      />
-                    </div>
-                  </div>
-                  <div className="name my-auto mx-4">{track.trackName}</div>
-                </div>
-              </div>
-              <div className="downlaod my-auto mr-1">
-                <a href={track.trackUrl} download={track.trackName} target="_">
-                  <GoArrowDown className="text-xl" />
-                </a>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="music--controller p-2 xl:p-4 flex flex-col justify-between row-span-2 ">
-        <div className="track--cover--name flex">
-          <div className="track--cover h-16 w-16 bg-black my-auto">
-            <img
-              src={`https://loremflickr.com/200/200?random=${
-                Math.floor(Math.random() * (50 - 1 + 1)) + 1
-              }`}
-              w-full
-              h-full
-              alt="cover--image"
-            />
-          </div>
-          <div className="track--name ml-2 my-auto">
-            {currentTrack.name ? currentTrack.name : "No track selected"}
-          </div>
-        </div>
-        <div className="music--controls my-2 px-4 xl:px-16 justify-around flex">
-          <div className="shuffle">1</div>
-          <div className="previous">
-            <FaStepBackward className="text-3xl" onClick={playPreviousTrack} />
-          </div>
-          <div className="play--pause">
-            {isPlaying ? (
-              <FaPause className="text-3xl" onClick={pauseTrack} />
-            ) : (
-              <FaPlay className="text-3xl" onClick={playTrack} />
-            )}
-          </div>
-          <div className="next">
-            <FaStepForward className="text-3xl" onClick={playNextTrack} />
-          </div>
-          <div className="loop">5</div>
-        </div>
-        <div className="flex justify-between">
-          <span className="current--time">{formatTime(duration)} </span>
-          <input
-            type="range"
-            min="0"
-            max={fullDuration}
-            value={duration}
-            onChange={handleSliderChange}
-            className="progress-bar mx-4"
-            style={{
-              width: "100%",
-              accentColor: "#1DB954", // Green color to match a Spotify-like theme
-            }}
-          />
-          <span className="full-duration">{formatTime(fullDuration)}</span>
-          <audio
-            src={currentTrack.url}
-            ref={audioRef}
-            onTimeUpdate={getCurrentTimeUpdate}
-            onLoadedMetadata={getFullLenght}
-            autoPlay
-            className="hidden"
-          />
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export default MusicPlayer;

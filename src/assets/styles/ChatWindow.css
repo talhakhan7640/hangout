@@ -1,6 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Klee+One&display=swap');
+
 .message--container {
   height: 100vh;
   background-color: #222325;
+  /* font-family: "Klee One", cursive;*/
+  /*font-weight: 400;*/
+  /*font-style: normal;*/
 }
 
 .message--container .room--name {
@@ -99,4 +104,8 @@ input:focus + .emoji-picker-icon + #emoji-picker,
   padding: 0.25rem; 
   cursor: pointer;
 }
- 
+
+
+
+
+

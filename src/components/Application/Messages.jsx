@@ -8,13 +8,14 @@ const Messages = ({ roomid }) => {
   const [loading, setLoading] = useState(true);
 
   const url = `https://hagnout-backend.onrender.com/messages/${roomid}`;
+  //const url = `http://localhost:5000/messages/${roomid}`
 
   useEffect(() => {
     const controller = new AbortController();
 
     const fetchMessages = async () => {
       try {
-        const response = await fetch(url, { signal: controller.signal });
+        const response = await fetch(url, { signal: controller.signal, credentials: 'include' });
         const data = await response.json();
         setMessageContainer(data);
         setLoading(false);
@@ -64,29 +65,6 @@ const Messages = ({ roomid }) => {
     );
   };
 
-  const getRandomColor = (index) => {
-    const colors = [
-    "#F87171", // red
-    "#60A5FA", // blue
-    "#34D399", // green
-    "#FBBF24", // yellow
-    "#A78BFA", // purple
-    "#FF79C6", // pink (VSCode-inspired)
-    "#8BE9FD", // cyan (VSCode-inspired)
-    "#BD93F9", // light purple (Discord-inspired)
-    "#FFB86C", // orange (Discord-inspired)
-    "#50FA7B", // bright green (Discord-inspired)
-    "#FF5555", // bold red (Discord-inspired)
-    "#6272A4", // VSCode dark blue
-    "#FFFA65", // bright yellow
-    "#8A8AFF", // indigo
-    "#6EE7B7", // teal green
-    "#B0E57C", // light lime green
-    "#E879F9", // fuchsia
-  ];
-    return colors[index % colors.length];
-  };
-
   return (
     <div className="message--container">
       {messageContainer.map((msg, idx) => {
@@ -117,7 +95,7 @@ const Messages = ({ roomid }) => {
                   </div>
                 )}
                 {msg.fileUrl && (
-                  <div className={`file ${isNewSender ? "pl-1" : "pl-14"}` }>
+                  <div className={`file ${isNewSender ? "pl-1" : "pl-14"}`}>
                     <a
                       href={msg.fileUrl}
                       target="_blank"
@@ -125,9 +103,8 @@ const Messages = ({ roomid }) => {
                     >
                       <img
                         src={msg.fileUrl}
-                        className={`mt-1 mb-1 rounded-lg w-full sm:w-96 md:w-1/2 lg:w-2/3 xl:w-2/6 object-cover`}
-                        style={{
-                        }}
+                        className={`mt-1 mb-1 rounded-lg w-full sm:w-96 md:w-1/2 lg:w-2/3 xl:w-1/4 object-cover`}
+                        style={{}}
                         alt="file"
                       />
                     </a>

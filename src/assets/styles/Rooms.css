@@ -105,7 +105,8 @@
 }
 
  .join--button {
-    background-color: #007ACC;
+    /*background-color: #007ACC;*/
+    background-color: #3B82F6;
     color: white;
 }
 

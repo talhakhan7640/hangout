@@ -43,6 +43,7 @@ const MusicPlayer = () => {
     const url = "https://hagnout-backend.onrender.com/rooms/add-track";
     await fetch(url, {
       method: "post",
+      credentials: 'include',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         roomId: roomid,
@@ -50,10 +51,10 @@ const MusicPlayer = () => {
         trackName: fileName,
       }),
     })
-    .then((response) => response.json())
-    .then(() => {
-      window.location.reload();
-    });
+      .then((response) => response.json())
+      .then(() => {
+        window.location.reload();
+      });
   };
 
   // Tracks controllers
@@ -147,7 +148,6 @@ const MusicPlayer = () => {
     <div className="music-player h-screen flex flex-col">
       {/* Top Section */}
       <div className=" h-16 flex items-center justify-center flex-shrink-0">
-
         <div className="music--player--top--bar w-full">
           <div className="flex">
             <form method="post" className="search--music p-2 w-full">
@@ -166,7 +166,6 @@ const MusicPlayer = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Scrollable Middle Section */}
@@ -180,21 +179,21 @@ const MusicPlayer = () => {
                   {runningTrack === track.trackName && isPlaying ? (
                     <FaPause className="text-3xl" onClick={pauseTrack} />
                   ) : (
-                      <FaPlay
-                        className="text-xl"
-                        onClick={() =>
-                          changeCurrentTrack(track.trackName, track.trackUrl)
-                        }
-                      />
-                    )}
+                    <FaPlay
+                      className="text-xl"
+                      onClick={() =>
+                        changeCurrentTrack(track.trackName, track.trackUrl)
+                      }
+                    />
+                  )}
                 </div>
                 <div className="control--name col-span-11 flex mx-3 w-full">
                   <div className="control">
                     <div className="bg-black w-16 h-16">
                       <img
                         src={`https://loremflickr.com/200/200?random=${
-Math.floor(Math.random() * (50 - 1 + 1)) + 1
-}`}
+                          Math.floor(Math.random() * (50 - 1 + 1)) + 1
+                        }`}
                         w-full
                         h-full
                         alt="cover--image"
@@ -219,7 +218,9 @@ Math.floor(Math.random() * (50 - 1 + 1)) + 1
         <div className="track--cover--name flex">
           <div className="track--cover h-16 w-16 bg-black my-auto">
             <img
-              src={`https://loremflickr.com/200/200?random=${Math.floor(Math.random() * (50 - 1 + 1)) + 1}`}
+              src={`https://loremflickr.com/200/200?random=${
+                Math.floor(Math.random() * (50 - 1 + 1)) + 1
+              }`}
               w-full
               h-full
               alt="cover--image"
@@ -238,8 +239,8 @@ Math.floor(Math.random() * (50 - 1 + 1)) + 1
             {isPlaying ? (
               <FaPause className="text-3xl" onClick={pauseTrack} />
             ) : (
-                <FaPlay className="text-3xl" onClick={playTrack} />
-              )}
+              <FaPlay className="text-3xl" onClick={playTrack} />
+            )}
           </div>
           <div className="next">
             <FaStepForward className="text-3xl" onClick={playNextTrack} />
@@ -269,11 +270,10 @@ Math.floor(Math.random() * (50 - 1 + 1)) + 1
             autoPlay
             className="hidden"
           />
-        </div> 
+        </div>
       </div>
     </div>
-
-  )
+  );
 };
 
 export default MusicPlayer;

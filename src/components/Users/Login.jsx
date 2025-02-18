@@ -17,10 +17,13 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const url = "https://hagnout-backend.onrender.com/users/login";
+    //const url = "https://hagnout-backend.onrender.com/users/login";
+    
+   const url = "http://localhost:5000/users/login" ;
 
     fetch(url, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -36,7 +39,6 @@ const Login = () => {
       })
       .then((data) => {
         console.log(data);
-        cookie.set("TOKEN", data.token, { path: "/" });
         cookie.set("username", loginCredentials.username, { path: "/" });
         cookie.set("senderId", data.userId, { path: "/" });
         cookie.set("profilePic", data.profilePic, { path: "/" });
@@ -46,6 +48,7 @@ const Login = () => {
         console.log(error);
       });
   };
+
   return (
     <div className="login--page fixed inset-0 flex items-center justify-center bg-opacity-75">
       <div className="login-form-container p-6  shadow-lg w-full max-w-md">
@@ -57,7 +60,7 @@ const Login = () => {
             <span className="italic">#hangout says: </span>おかえり 😊
           </h2>
           <p className="text-gray-300">
-            Join the conversation with friends with some lofi beats.
+            Sync, Chat, Listen: All Together in Real-Time
           </p>
         </div>
         <form id="login-form" onSubmit={handleSubmit} className="space-y-4">

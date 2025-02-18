@@ -19,6 +19,7 @@ const CreateRoom = ({ onClose }) => {
 		const url = "https://hagnout-backend.onrender.com/rooms/create-room"
 		await fetch(url, {
 			method: "POST",
+      credentials: 'include',
 			headers:{
 				"Content-Type": "application/json",
 			},

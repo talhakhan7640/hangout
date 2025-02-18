@@ -7,8 +7,6 @@ import Messages from "./Messages";
 import Cookies from "universal-cookie";
 import socket from "../socket/socket.js";
 import MusicPlayer from "./MusicPlayer";
-import { storage } from "../../firebase/firebase.config.js";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { IoPeopleSharp } from "react-icons/io5";
 import { TbPinFilled } from "react-icons/tb";
 import { RiNeteaseCloudMusicFill } from "react-icons/ri";
@@ -18,9 +16,15 @@ import { BsEmojiWink } from "react-icons/bs";
 import { PiGifFill } from "react-icons/pi";
 import { LuSticker } from "react-icons/lu";
 
+// modules for uploading files on the firestore
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
 const ChatWindow = () => {
   const cookie = new Cookies();
   const { roomid, roomName } = useParams();
+
+  // file state
+  const [fileToSend, setFileToSend] = useState(null);
 
   // Message state
   const [messageContent, setMessageContent] = useState("");
@@ -28,34 +32,60 @@ const ChatWindow = () => {
   // Toggle emoji picker
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
-  const [fileUrl, setFileUrl] = useState("");
-  const [membersList, setMembersList] = useState([]);
-  const [isMembersListVisible, setIsMembersListVisible] = useState(false);
-  const [isMusicPlayerVisible, setIsMusicPlayerVisible] = useState(false);
-
   //Toggle popup
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+  // Toggle Image preview container
+  const [previewContainer, setPreviewContainer] = useState(false);
 
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
   };
 
+  // HANDLE EMOJI PICKER
   const appendEmoji = (emoji) => {
     let message = messageContent;
     setMessageContent(message + emoji.emoji);
   };
 
   const toggleEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker);
+    setShowEmojiPicker(false);
   };
 
-   // this function is called on submit
-  const handleSubmitMessage = async (e) => {
-    e.preventDefault();
+  // handle file change function
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFileToSend(file);
+    setPreviewContainer(true);
+  };
 
-    let fileUrlToSend = '';
+  const handleImagePreview = () => {
+    setPreviewContainer(!previewContainer);
+    setFileToSend(null);
+  };
+
+  const uploadFileToFirestore = async () => {
+    try {
+      const storage = getStorage();
+      const storageRef = ref(storage, `images/${fileToSend.name}`);
+      uploadBytes(storageRef, fileToSend);
+      const url = await getDownloadURL(storageRef);
+      return url;
+    } catch (error) {
+      console.error("Error uploading file to Firestore:", error);
+      throw error;
+    }
+  };
+
+  // this function is called on submit
+  const handleSubmitMessage = async () => {
+    console.log("i want food");
+    let fileUrlToSend = "";
+    if (fileToSend) {
+      fileUrlToSend = await uploadFileToFirestore();
+    }
+
+    console.log("file url to send ", fileUrlToSend);
 
     if (messageContent.length > 0 || fileUrlToSend) {
       // make an API call for sending message
@@ -75,21 +105,21 @@ const ChatWindow = () => {
           roomId: roomid,
         }),
       })
-      .then((response) => {
-        // send real time message to the server
-        socket.emit("msg", {
-          messageContent: messageContent,
-          fileUrl: fileUrlToSend,
-          username: cookie.get("username"),
+        .then((response) => {
+          // send real time message to the server
+          socket.emit("msg", {
+            messageContent: messageContent,
+            fileUrl: fileUrlToSend,
+            username: cookie.get("username"),
+          });
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data.message);
+          setFileToSend(null);
+          setMessageContent("");
+          setPreviewContainer(false);
         });
-        setMessageContent("");
-        setSelectedFile(null);
-        setFilePreview(null);
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data.message);
-      });
     }
   };
 
@@ -113,65 +143,26 @@ const ChatWindow = () => {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then(() => {
         navigate("/hangout/rooms");
         window.location.reload();
       });
   };
 
-  const showMembersList = () => {
-    setIsMembersListVisible(!isMembersListVisible);
-    setIsMusicPlayerVisible(false);
-  };
-
-  const showMusicPlayer = () => {
-    setIsMusicPlayerVisible(!isMusicPlayerVisible);
-    setIsMembersListVisible(false);
-  };
-
-  useEffect(() => {
-    const getMembersList = async () => {
-      const url = "https://hagnout-backend.onrender.com/rooms/fetch-members";
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ roomid }),
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        setMembersList(data);
-      });
-    };
-
-    getMembersList();
-  }, [roomName]);
-
-
   return (
     <div className="message--container grid grid-cols-12">
-      <div className="col-span-12 xl:col-span-9 h-screen flex flex-col">
+      <div className="col-span-12 xl:col-span-12 h-screen flex flex-col">
         {/* Top Section */}
-        <div className="md:h-14 flex py-2 items-center px-3 md:px-4 justify-between top--bar flex-shrink-0">
+        <div className="md:h-14 flex py-2 items-center px-3 md:px-4 justify-between top--bar flex-shrink-0 border-b-2 border-[#19191b]">
           {/* Room Name on Left */}
           <div className="text-xl font-bold room--name">
-            <span className="tag"># </span>
+            <span className="tag">#</span>
             {roomName}
           </div>
 
           {/* Icons on Right */}
           <div className="search--message more--options flex items-center space-x-3">
             {/* Icons for Larger Screens */}
-            <TbPinFilled
-              className="my-auto text-5xl hidden md:block"
-              style={{ color: "#DBDEE1" }}
-            />
-            <IoPeopleSharp
-              className="my-auto text-5xl hidden md:block"
-              style={{ color: "#DBDEE1" }}
-              onClick={() => showMembersList()}
-            />
 
             {/* Search Icon for Mobile */}
             <div className="block md:hidden">
@@ -188,10 +179,10 @@ const ChatWindow = () => {
             <RiNeteaseCloudMusicFill
               className="my-auto text-2xl md:text-5xl  xl:hidden"
               style={{ color: "#DBDEE1" }}
-              onClick={() => showMusicPlayer()}
             />
+
             <TbDotsVertical
-              className="text-2xl md:text-5xl my-auto more--options"
+              className="text-2xl md:text-4xl my-auto more--options"
               onClick={togglePopup}
               style={{ color: "#DBDEE1" }}
             />
@@ -200,38 +191,7 @@ const ChatWindow = () => {
 
         {/* Scrollable Middle Section */}
         <div className="flex-grow overflow-y-auto relative">
-          <div className="absolute right-6 md:right-7 top-0 flex flex-col space-y-4">
-            {isMembersListVisible && (
-              <div
-                className="room--members--list p-4 rounded-md"
-                style={{
-                  width: "200px",
-                  backgroundColor: "#19191B",
-                }}
-              >
-                {membersList.map((member, idx) => (
-                  <div key={idx} className="flex items-center mb-2">
-                    <div className="profile--picture rounded-full overflow-hidden h-10 w-10 mr-3 bg-blue-500 text-white flex items-center justify-center">
-                      <img
-                        src={member.profilePic}
-                        alt="avatar"
-                        className="w-full h-full object-cover user--profile--picture"
-                      />
-                    </div>
-                    <span className="member--name text-white">
-                      {member.username}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {isMusicPlayerVisible && (
-              <div className="music-player px-2  rounded-md shadow-md text-white">
-                <MusicPlayer />
-              </div>
-            )}
-          </div>
+          <div className="absolute right-6 md:right-7 top-0 flex flex-col space-y-4"></div>
 
           {/* Messages Section */}
           <Messages roomid={roomid} />
@@ -239,20 +199,58 @@ const ChatWindow = () => {
 
         {/* Bottom Section */}
         <div className="message--input relative h-18 py-4 flex items-center justify-center">
+          {/* Image preview container*/}
+          {previewContainer && fileToSend ? (
+            <div
+              className="preview absolute flex bottom-16 left-0 m-4 bg-[#19191B]"
+              onSubmit={handleMessageChange}
+              style={{
+                width: "300px",
+                backgroundColor: "#19191B",
+              }}
+            >
+              <img
+                src={URL.createObjectURL(fileToSend)}
+                className="h-full"
+                alt="image-preview"
+              />
+              <div
+                className="ml-2 mt-1 text-lg cursor-pointer"
+                onClick={handleImagePreview}
+              >
+                <span className="bg-red-900 p-1">X</span>
+                
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
 
           {/* Message Field */}
-          <div className="message--field w-full px-4 text-white flex items-center relative">
+          <div
+            className="message--field w-full px-4 text-white flex items-center relative"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && previewContainer) {
+                e.preventDefault();
+                handleSubmitMessage();
+              }
+            }}
+          >
             <form
               action=""
-              onSubmit={handleSubmitMessage}
+              onSubmit={(e) => {
+                e.preventDefault(); // Prevent default form submission
+                handleSubmitMessage(); // Call your submit function
+              }}
               className="w-full flex items-center space-x-3"
             >
               {/* File Attach Icon */}
               <label className="file-attach-icon cursor-pointer relative">
-                <BiImageAdd className="text-3xl" style={{ color: "#DBDEE1" }}/>
+                <BiImageAdd className="text-3xl" style={{ color: "#DBDEE1" }} />
                 <input
                   type="file"
                   className="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full"
+                  onChange={handleFileChange}
                 />
               </label>
 
@@ -265,25 +263,24 @@ const ChatWindow = () => {
                 placeholder="Type your message and hit enter"
               />
 
-              <span
-                className="sticker-picker-icon cursor-pointer"
-              >
-                <LuSticker className="text-3xl" style={{ color: "#DBDEE1" }}/>
+              <span className="sticker-picker-icon cursor-pointer">
+                <LuSticker className="text-3xl" style={{ color: "#DBDEE1" }} />
               </span>
 
-              <span
-                className="gif-picker-icon cursor-pointer"
-              >
-                <PiGifFill className="text-3xl" style={{ color: "#DBDEE1" }}/>
+              <span className="gif-picker-icon cursor-pointer">
+                <PiGifFill className="text-3xl" style={{ color: "#DBDEE1" }} />
               </span>
 
               {/* Emoji Picker Icon */}
-              
+
               <span
                 className="emoji-picker-icon cursor-pointer"
                 onClick={toggleEmojiPicker}
               >
-                <BsEmojiWink className="text-2xl" style={{ color: "#DBDEE1" }}/>
+                <BsEmojiWink
+                  className="text-2xl"
+                  style={{ color: "#DBDEE1" }}
+                />
               </span>
 
               {/* Emoji Picker Dropdown */}
@@ -298,15 +295,15 @@ const ChatWindow = () => {
             </form>
           </div>
         </div>
-
-
-        
       </div>
 
       {/* Right Sidebar - Visible on Large Screens */}
+
+      {/* 
       <div className="hidden xl:block xl:col-span-3">
-        <MusicPlayer />
+         <MusicPlayer />
       </div>
+*/}
     </div>
   );
 };

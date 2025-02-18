@@ -17,13 +17,13 @@ const Index = () => {
 
   const outlet = useOutlet();
 
-  if (cookie.get("TOKEN") === undefined) {
-    return (
-      <div>
-        <AccessDenied />
-      </div>
-    );
-  } else {
+  //if (cookie.get("token") === undefined) {
+  //  return (
+  //    <div>
+  //      <AccessDenied />
+  //    </div>
+  //  );
+  //} else {
     return (
       <div className="index--layout">
         <div className="grid grid-cols-12 h-screen">
@@ -39,22 +39,23 @@ const Index = () => {
             {outlet ? (
               <Outlet />
             ) : (
-                <div className="select--room--message flex justify-center w-full">
-                  {/* Display Rooms only on mobile */}
-                  <div className="block md:hidden w-full">
-                    <Rooms />
-                  </div>
-
-                  {/* Show prompt only on desktop */}
-                  <h1 className="hidden md:block">Select room to start conversation</h1>
+              <div className="select--room--message flex justify-center w-full">
+                {/* Display Rooms only on mobile */}
+                <div className="block md:hidden w-full">
+                  <Rooms />
                 </div>
+
+                {/* Show prompt only on desktop */}
+                <h1 className="hidden md:block">
+                  Select room to start conversation
+                </h1>
+              </div>
             )}
           </div>
         </div>
-
       </div>
     );
-  }
+  //}
 };
 
 export default Index;

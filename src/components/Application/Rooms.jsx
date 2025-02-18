@@ -21,7 +21,7 @@ const Rooms = () => {
   const [searchedRooms, setSearchedRooms] = useState([]);
   const [message, setMessage] = useState("");
   const [joinText, setJoinText] = useState("Join");
-    const [gif, setGIF] = useState("");
+  const [gif, setGIF] = useState("");
   const [activeRoomId, setActiveRoomId] = useState("");
 
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
@@ -33,11 +33,11 @@ const Rooms = () => {
   const [isSettingPopupVisible, setIsSettingPopupVisible] = useState(false);
 
   // Toggle microphone
-  const [isMute, setIsMute]  = useState(false);
+  const [isMute, setIsMute] = useState(false);
 
   const toggleMicrophone = () => {
     setIsMute(!isMute);
-  }
+  };
 
   const togglePopup = () => {
     setIsSettingPopupVisible(!isSettingPopupVisible);
@@ -50,9 +50,11 @@ const Rooms = () => {
   // fetch rooms the current user has joined
   useEffect(() => {
     const url = "https://hagnout-backend.onrender.com/rooms/fetch-rooms/";
+    //const url = "http://localhost:5000/rooms/fetch-rooms/";
 
     const response = fetch(url, {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -72,14 +74,18 @@ const Rooms = () => {
       var reverseRoomId = splitRoomId.reverse();
 
       var joinRoomId = reverseRoomId.join("");
-      
-      return joinRoomId;
-    }
 
-      let currentRoomId = "";
-      for(var i = window.location.href.length - 1; i >= window.location.href.length - 24; i--) {
-        currentRoomId+= window.location.href[i];
-      }
+      return joinRoomId;
+    };
+
+    let currentRoomId = "";
+    for (
+    var i = window.location.href.length - 1;
+    i >= window.location.href.length - 24;
+    i--
+  ) {
+      currentRoomId += window.location.href[i];
+    }
 
     setGifForCurrentRoom(reverseRoomId(currentRoomId));
   }, [username]);
@@ -158,21 +164,16 @@ const Rooms = () => {
   };
 
   const setGifForCurrentRoom = (roomid) => {
-     getGifForCurrentRoom().then((gifData) => {
+    getGifForCurrentRoom().then((gifData) => {
       setGIF(gifData.data.images.original.url);
       setActiveRoomId(roomid);
     });
-  }
-
-  const getRandomColor = (index) => {
-    const colors = ["#F87171", "#60A5FA", "#34D399", "#FBBF24", "#A78BFA"];
-    return colors[index % colors.length];
   };
 
   return (
     <div className="rooms-container h-screen flex flex-col">
       {/* Top Section */}
-      <div className="h-16 w-full my-auto flex items-center justify-center flex-shrink-0">
+      <div className="h-16 w-full my-auto flex items-center justify-center flex-shrink-0 ">
         <form
           method="post"
           className="search--room p-2 w-full"
@@ -186,7 +187,6 @@ const Rooms = () => {
             className="px-3"
           />
         </form>
-
       </div>
 
       {/* Scrollable Middle Section */}
@@ -198,10 +198,10 @@ const Rooms = () => {
               className="w-full"
               onClick={() => goToChatRoom(room._id, room.roomName)}
             >
-              <div className="join--room flex justify-between m-2 p-2 border rounded-md">
+              <div className="join--room flex justify-between m-2 p-2 bg-[#222325]">
                 <div className="room px-1 my-auto">{room.roomName}</div>
                 <button
-                  className="join--button py-1 px-4 border rounded-md"
+                  className="join--button py-1 px-4"
                   onClick={(e) => {
                     e.stopPropagation();
                     joinRoomHandler(room.roomId);
@@ -213,36 +213,35 @@ const Rooms = () => {
             </div>
           ))
         ) : message ? (
-            <div className="message m-2 p-3">{message}</div>
-          ) : (
-              // Render the rooms component
-              rooms.map((room, index) => (
-                <div
-                  key={index}
-                  className="room-container"
-                  onClick={() => goToChatRoom(room._id, room.roomName)}
-                >
-                  <div
-                    className="room m-2 p-3 cursor-pointer"
-                    style={
-                      activeRoomId === room._id
-                        ? {
-                          backgroundImage: `url(${gif})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          color: "black",
-                          fontWeight: 700,
-                          fontSize: "18px",
-                        }
-                        : {}
-                    }
-                  >
-                    {room.roomName}
-                  </div>
-                </div>
-              ))
-            )}
-
+          <div className="message m-2 p-3">{message}</div>
+        ) : (
+          // Render the rooms component
+          rooms.map((room, index) => (
+            <div
+              key={index}
+              className="room-container"
+              onClick={() => goToChatRoom(room._id, room.roomName)}
+            >
+              <div
+                className="room m-2 p-3 cursor-pointer"
+                style={
+                  activeRoomId === room._id
+                    ? {
+                        backgroundImage: `url(${gif})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        color: "black",
+                        fontWeight: 700,
+                        fontSize: "18px",
+                      }
+                    : {}
+                }
+              >
+                {room.roomName}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Bottom Section */}
@@ -258,18 +257,27 @@ const Rooms = () => {
           <div className="username px-2 font-normal text-[15px]">
             <span>{username}</span>
           </div>
-        </div> 
+        </div>
 
         <div className="add--room--settings flex items-center">
           <div className="microphone-status px-1">
             {isMute ? (
-              <BiSolidMicrophone className="text-3xl " onClick={() => toggleMicrophone()}/>
-            ): (
-                <BiSolidMicrophoneOff className="text-3xl" onClick={()=> toggleMicrophone()}/>
+              <BiSolidMicrophone
+                className="text-3xl "
+                onClick={() => toggleMicrophone()}
+              />
+            ) : (
+              <BiSolidMicrophoneOff
+                className="text-3xl"
+                onClick={() => toggleMicrophone()}
+              />
             )}
           </div>
           <div className="add--room px-1 cursor-pointer">
-            <IoIosAddCircleOutline className="text-3xl" onClick={() => setShowCreateRoomModal(true)}/>
+            <IoIosAddCircleOutline
+              className="text-3xl"
+              onClick={() => setShowCreateRoomModal(true)}
+            />
             {showCreateRoomModal &&
               createPortal(
                 <CreateRoom onClose={() => setShowCreateRoomModal(false)} />,
@@ -277,12 +285,12 @@ const Rooms = () => {
               )}
           </div>
           <div className="settings px-1 cursor-pointer">
-            <CiSettings className="text-3xl text-white"/>
+            <CiSettings className="text-3xl text-white" />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 export default Rooms;

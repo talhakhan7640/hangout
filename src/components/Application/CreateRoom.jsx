@@ -4,41 +4,42 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 
 const CreateRoom = ({ onClose }) => {
-	const cookie = new  Cookies();
-	const navigate = useNavigate();
-	const [roomDetails,setRoomDetails] = useState({
-		roomName: "",
-		roomDescription: "",
-		roomAdmin: cookie.get("username"),
-	});
-	const [response, setResponse] = useState('');
-	var statusCode= 0;
+  const cookie = new  Cookies();
+  const navigate = useNavigate();
+  const [roomDetails,setRoomDetails] = useState({
+    roomName: "",
+    roomDescription: "",
+    roomAdmin: cookie.get("username"),
+  });
+  const [response, setResponse] = useState('');
+  var statusCode= 0;
 
-	const createRoomHandler = async (e) =>{
-		e.preventDefault();
-		const url = "https://hagnout-backend.onrender.com/rooms/create-room"
-		await fetch(url, {
-			method: "POST",
+  const createRoomHandler = async (e) =>{
+    e.preventDefault();
+    const url = "https://hagnout-backend.onrender.com/rooms/create-room"
+    //const url = 'http://localhost:5000/rooms/create-room';
+    await fetch(url, {
+      method: "POST",
       credentials: 'include',
-			headers:{
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(roomDetails)
-		}).then((response) => {
-			statusCode = response.status
-			return response.json();
-		}).then((data) => {
-			console.log(data)
-			setResponse(data.message);
-			if(statusCode !== 409){
+      headers:{
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(roomDetails)
+    }).then((response) => {
+      statusCode = response.status
+      return response.json();
+    }).then((data) => {
+      console.log(data)
+      setResponse(data.message);
+      if(statusCode !== 409){
 
         window.location.reload()
-				setTimeout(onClose, 2000);
+        setTimeout(onClose, 2000);
 
-			}
-		})
-	}
-	return (
+      }
+    })
+  }
+  return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
         <h3 className="text-red-500">{response}</h3>

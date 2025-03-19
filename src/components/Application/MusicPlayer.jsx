@@ -11,25 +11,25 @@ import { GoArrowDown } from "react-icons/go";
 const MusicPlayer = () => {
   const { roomid } = useParams();
   const [tracks, setTracks] = useState([]);
-  const [currentTrack, setCurrentTrack] = useState({ name: "", url: "" });
+  const [currentTrack, setCurrentTrack] = useState({ name: "", url: "", timestamp: 0 });
   const [runningTrack, setRunningTrack] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [fullDuration, setFullDuration] = useState(0);
-  const audioRef = useRef();
+  const audioRef = useRef(); 
 
+  // 🔹 Emit track change event to WebSocket
   const changeCurrentTrack = (trackName, trackUrl) => {
-    socket.emit("msg", { trackName, trackUrl });
-    setCurrentTrack({ name: trackName, url: trackUrl });
+    const startTime = Date.now(); // Store when the song started
+    socket.emit("song_change", { roomId: roomid, trackName, trackUrl, startTime });
+    setCurrentTrack({ name: trackName, url: trackUrl, timestamp: 0, startTime });
     setIsPlaying(true);
     setRunningTrack(trackName);
-  };
+  }; 
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      fileUpload(file);
-    }
+    if (file) fileUpload(file);
   };
 
   const fileUpload = async (file) => {
@@ -41,6 +41,7 @@ const MusicPlayer = () => {
 
   const addTrackToRoomPlayer = async (fileUrl, fileName) => {
     const url = "https://hagnout-backend.onrender.com/rooms/add-track";
+    //const url = "http://localhost:5000/rooms/add-track";
     await fetch(url, {
       method: "post",
       credentials: 'include',
@@ -51,22 +52,14 @@ const MusicPlayer = () => {
         trackName: fileName,
       }),
     })
-      .then((response) => response.json())
-      .then(() => {
-        window.location.reload();
-      });
+    .then(() => {
+      window.location.reload();
+    });
   };
 
   // Tracks controllers
-  const playTrack = () => {
-    audioRef.current.play();
-    setIsPlaying(true);
-  };
-
-  const pauseTrack = () => {
-    audioRef.current.pause();
-    setIsPlaying(false);
-  };
+  const playTrack = () => { audioRef.current.play(); setIsPlaying(true); };
+  const pauseTrack = () => { audioRef.current.pause(); setIsPlaying(false); }; 
 
   const playNextTrack = () => {
     const cTrackName = currentTrack.name;
@@ -103,13 +96,18 @@ const MusicPlayer = () => {
     }
   };
 
-  const getFullLenght = () => {
-    setFullDuration(audioRef.current.duration);
-  };
+  const getFullLenght = () => setFullDuration(audioRef.current.duration);
 
   const getCurrentTimeUpdate = () => {
     const time = audioRef.current.currentTime;
     setDuration(time);
+    socket.emit("track-update", {
+      url: currentTrack.url,
+      name: currentTrack.name,
+      timestamp: time,
+      fullDuration: audioRef.current.duration,
+      startTime: currentTrack.startTime,
+    }); 
   };
 
   const formatTime = (time) => {
@@ -128,8 +126,9 @@ const MusicPlayer = () => {
 
   useEffect(() => {
     const url = `https://hagnout-backend.onrender.com/rooms/fetch-tracks/${roomid}`;
+    //const url = `http://localhost:5000/rooms/fetch-tracks/${roomid}`;
     const fetchTracks = async () => {
-      const response = await fetch(url);
+      const response = await fetch(url,{ credentials: 'include'});
       const data = await response.json();
       setTracks(data);
       setCurrentTrack({ name: "", url: "" });
@@ -137,13 +136,30 @@ const MusicPlayer = () => {
     };
     fetchTracks();
 
-    socket.on("trackDetails", (msgC) => {
-      setCurrentTrack({ name: msgC.trackName, url: msgC.trackUrl });
-    });
+    // 🔹 Sync new users to the current track & timestamp
+    const handleTrackUpdate = (track) => {
+      console.log("📥 Received track update:", track);
+      const elapsedTime = (Date.now() - track.startTime) / 1000; 
+      const seekPosition = Math.min(elapsedTime, track.fullDuration);
+
+      setCurrentTrack(track);
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.currentTime = seekPosition;
+          audioRef.current.play();
+          setIsPlaying(true);
+        }
+      }, 500);
+    };
+
+    socket.on("track-update", handleTrackUpdate);
+
+    return () => {
+      socket.off("track-update", handleTrackUpdate);
+    };
+
   }, [roomid]);
 
-  // goes here
-  //
   return (
     <div className="music-player h-screen flex flex-col">
       {/* Top Section */}
@@ -179,21 +195,21 @@ const MusicPlayer = () => {
                   {runningTrack === track.trackName && isPlaying ? (
                     <FaPause className="text-3xl" onClick={pauseTrack} />
                   ) : (
-                    <FaPlay
-                      className="text-xl"
-                      onClick={() =>
-                        changeCurrentTrack(track.trackName, track.trackUrl)
-                      }
-                    />
-                  )}
+                      <FaPlay
+                        className="text-xl"
+                        onClick={() =>
+                          changeCurrentTrack(track.trackName, track.trackUrl)
+                        }
+                      />
+                    )}
                 </div>
                 <div className="control--name col-span-11 flex mx-3 w-full">
                   <div className="control">
                     <div className="bg-black w-16 h-16">
                       <img
                         src={`https://loremflickr.com/200/200?random=${
-                          Math.floor(Math.random() * (50 - 1 + 1)) + 1
-                        }`}
+Math.floor(Math.random() * (50 - 1 + 1)) + 1
+}`}
                         w-full
                         h-full
                         alt="cover--image"
@@ -219,8 +235,8 @@ const MusicPlayer = () => {
           <div className="track--cover h-16 w-16 bg-black my-auto">
             <img
               src={`https://loremflickr.com/200/200?random=${
-                Math.floor(Math.random() * (50 - 1 + 1)) + 1
-              }`}
+Math.floor(Math.random() * (50 - 1 + 1)) + 1
+}`}
               w-full
               h-full
               alt="cover--image"
@@ -239,8 +255,8 @@ const MusicPlayer = () => {
             {isPlaying ? (
               <FaPause className="text-3xl" onClick={pauseTrack} />
             ) : (
-              <FaPlay className="text-3xl" onClick={playTrack} />
-            )}
+                <FaPlay className="text-3xl" onClick={playTrack} />
+              )}
           </div>
           <div className="next">
             <FaStepForward className="text-3xl" onClick={playNextTrack} />

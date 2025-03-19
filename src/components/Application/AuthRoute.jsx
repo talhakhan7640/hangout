@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 const AuthRoute = ({component}) => {
   const cookie = new Cookies();
-  if (cookie.get("TOKEN") === undefined ) {
+  if (cookie.get("token") === undefined ) {
     return (
       <div>
         <AccessDenied />

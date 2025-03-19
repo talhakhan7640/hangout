@@ -77,24 +77,20 @@ const ChatWindow = () => {
     }
   };
 
-  // this function is called on submit
+  // This function is called on submit
   const handleSubmitMessage = async () => {
-    console.log("i want food");
     let fileUrlToSend = "";
     if (fileToSend) {
       fileUrlToSend = await uploadFileToFirestore();
     }
 
-    console.log("file url to send ", fileUrlToSend);
-
     if (messageContent.length > 0 || fileUrlToSend) {
-      // make an API call for sending message
-
       const url = "https://hagnout-backend.onrender.com/messages/send";
-      // const url = "http://localhost:5000/messages/send";
+       //const url = "http://localhost:5000/messages/send";
 
       await fetch(url, {
         method: "POST",
+        credentials : "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -106,7 +102,6 @@ const ChatWindow = () => {
         }),
       })
         .then((response) => {
-          // send real time message to the server
           socket.emit("msg", {
             messageContent: messageContent,
             fileUrl: fileUrlToSend,
@@ -115,7 +110,6 @@ const ChatWindow = () => {
           return response.json();
         })
         .then((data) => {
-          console.log(data.message);
           setFileToSend(null);
           setMessageContent("");
           setPreviewContainer(false);
@@ -134,6 +128,7 @@ const ChatWindow = () => {
 
     fetch(url, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -151,7 +146,7 @@ const ChatWindow = () => {
 
   return (
     <div className="message--container grid grid-cols-12">
-      <div className="col-span-12 xl:col-span-12 h-screen flex flex-col">
+      <div className="col-span-12 xl:col-span-9 h-screen flex flex-col">
         {/* Top Section */}
         <div className="md:h-14 flex py-2 items-center px-3 md:px-4 justify-between top--bar flex-shrink-0 border-b-2 border-[#19191b]">
           {/* Room Name on Left */}
@@ -299,11 +294,11 @@ const ChatWindow = () => {
 
       {/* Right Sidebar - Visible on Large Screens */}
 
-      {/* 
+      {
       <div className="hidden xl:block xl:col-span-3">
          <MusicPlayer />
       </div>
-*/}
+}
     </div>
   );
 };

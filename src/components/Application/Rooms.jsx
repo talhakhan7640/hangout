@@ -7,6 +7,8 @@ import CreateRoom from "./CreateRoom";
 import { createPortal } from "react-dom";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
+import socket from "../socket/socket";
+import {connect} from "socket.io-client";
 
 const Rooms = () => {
   const navigate = useNavigate();
@@ -52,6 +54,26 @@ const Rooms = () => {
     const url = "https://hagnout-backend.onrender.com/rooms/fetch-rooms/";
     //const url = "http://localhost:5000/rooms/fetch-rooms/";
 
+
+    // FOR EDUCATIONAL PURPOSE ONLY ---- NOT SUITABLE FOR PRODUCTION
+    //const cookies = document.cookie.token;
+    //
+    //function getCookie(name) {
+    //  const cookies = document.cookie.split('; ');
+    //  console.log(cookies);
+    //  for (const cookie of cookies) {
+    //    const [key, value] = cookie.split('=');
+    //    if (key === name) {
+    //      return value;
+    //    }
+    //  }
+    //  return null; // Return null if cookie not found
+    //}
+
+    //const manualToken = getCookie("manualToken");
+    //console.log("manual token", manualToken);
+    //
+
     const response = fetch(url, {
       method: "POST",
       credentials: 'include',
@@ -61,6 +83,15 @@ const Rooms = () => {
 
       body: JSON.stringify({ username }),
     });
+
+    if (!response.ok) {
+      if (response.status === 401) { 
+        // If unauthorized, try to read it as text (HTML)
+        const htmlContent = response.text();
+        document.body.innerHTML = htmlContent; // Replace current page with the received HTML
+        return;
+      }
+    }
 
     response
       .then((response) => response.json())
@@ -96,6 +127,7 @@ const Rooms = () => {
     const url = "https://hagnout-backend.onrender.com/rooms/search-room";
     await fetch(url, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -122,6 +154,7 @@ const Rooms = () => {
     const url = "https://hagnout-backend.onrender.com/rooms/join-room";
     await fetch(url, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

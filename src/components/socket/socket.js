@@ -8,6 +8,7 @@ const liveSocket = "https://hagnout-backend.onrender.com/"
 
 //Create a socket instance 
 const socket = io(liveSocket, {
+	autoConnect: true,
 	extraHeaders: {
 		'my-custom-header' : "abcd",
 	}
@@ -15,11 +16,11 @@ const socket = io(liveSocket, {
 
 // Handle connection
 socket.on('connect', () => {
-	console.log(` a user connected with id: `, socket.id);
+	console.log(`a user connected with id: `, socket.id);
 })
 
 socket.on('disconnect', () => {
-	console.log(` a user disconnected with id: `, socket.id);
+	console.log(`a user disconnected with id: `, socket.id);
 })
 
 socket.on('connect_error',(error) => {

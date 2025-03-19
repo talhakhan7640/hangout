@@ -16,6 +16,16 @@ const Messages = ({ roomid }) => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(url, { signal: controller.signal, credentials: 'include' });
+        // If user if unauthorized
+        if (!response.ok) {
+          if (response.status === 401) { 
+            // If unauthorized, try to read it as text (HTML)
+            const htmlContent = await response.text();
+            document.body.innerHTML = htmlContent; // Replace current page with the received HTML
+            return;
+          } 
+        }
+        // if user is authorized
         const data = await response.json();
         setMessageContainer(data);
         setLoading(false);
@@ -30,7 +40,6 @@ const Messages = ({ roomid }) => {
 
     fetchMessages();
     socket.on("msg", (msgC) => {
-      console.log(msgC);
       setMessageContainer((prevMessages) => [...prevMessages, msgC]);
     });
 

@@ -51,8 +51,8 @@ const Rooms = () => {
 
   // fetch rooms the current user has joined
   useEffect(() => {
-    const url = "https://hagnout-backend.onrender.com/rooms/fetch-rooms/";
-    //const url = "http://localhost:5000/rooms/fetch-rooms/";
+    //const url = "https://hagnout-backend.onrender.com/rooms/fetch-rooms/";
+    const url = "http://localhost:5000/rooms/fetch-rooms/";
 
 
     // FOR EDUCATIONAL PURPOSE ONLY ---- NOT SUITABLE FOR PRODUCTION

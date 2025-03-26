@@ -11,7 +11,7 @@ import { GoArrowDown } from "react-icons/go";
 const MusicPlayer = () => {
   const { roomid } = useParams();
   const [tracks, setTracks] = useState([]);
-  const [currentTrack, setCurrentTrack] = useState({ name: "", url: "", timestamp: 0 });
+  const [currentTrack, setCurrentTrack] = useState({ name: "", url: "" });
   const [runningTrack, setRunningTrack] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -20,11 +20,7 @@ const MusicPlayer = () => {
 
   // 🔹 Emit track change event to WebSocket
   const changeCurrentTrack = (trackName, trackUrl) => {
-    const startTime = Date.now(); // Store when the song started
-    socket.emit("song_change", { roomId: roomid, trackName, trackUrl, startTime });
-    setCurrentTrack({ name: trackName, url: trackUrl, timestamp: 0, startTime });
-    setIsPlaying(true);
-    setRunningTrack(trackName);
+    socket.emit("song_change", { roomId: roomid, trackName, trackUrl });
   }; 
 
   const handleFileChange = (e) => {
@@ -101,13 +97,13 @@ const MusicPlayer = () => {
   const getCurrentTimeUpdate = () => {
     const time = audioRef.current.currentTime;
     setDuration(time);
-    socket.emit("track-update", {
-      url: currentTrack.url,
-      name: currentTrack.name,
-      timestamp: time,
-      fullDuration: audioRef.current.duration,
-      startTime: currentTrack.startTime,
-    }); 
+    socket.emit('get_song_updates', {
+      roomId : roomid,
+      trackName : currentTrack.name,
+      trackURL : currentTrack.url,
+      duration : audioRef.current.currentTime,
+      fullDuration : fullDuration
+    })
   };
 
   const formatTime = (time) => {
@@ -124,6 +120,12 @@ const MusicPlayer = () => {
     }
   };
 
+  socket.on("song_change", (track) => {
+    setCurrentTrack({ name: track.trackName, url: track.trackUrl });
+    setIsPlaying(true);
+    setRunningTrack(track.trackName);
+  })
+
   useEffect(() => {
     //const url = `https://hagnout-backend.onrender.com/rooms/fetch-tracks/${roomid}`;
     const url = `http://localhost:5000/rooms/fetch-tracks/${roomid}`;
@@ -131,47 +133,33 @@ const MusicPlayer = () => {
       const response = await fetch(url,{ credentials: 'include'});
       const data = await response.json();
       setTracks(data);
-      setCurrentTrack({ name: "", url: "" });
-      setIsPlaying(false);
     };
     fetchTracks();
 
-    // 🔹 Sync new users to the current track & timestamp
-    const handleTrackUpdate = (track) => {
-      console.log("📥 Received track update:", track);
-      const elapsedTime = (Date.now() - track.startTime) / 1000; 
-      const seekPosition = Math.min(elapsedTime, track.fullDuration);
+    function handleRunningTrack(data) {
+      console.log(data);
+      setCurrentTrack({name : data.trackName, url : data.trackURL});
+      setRunningTrack(data.trackName);
+      setIsPlaying(true);
+      setDuration(data.duration);
+      setFullDuration(data.fullDuration);
 
-      setCurrentTrack(track);
-      setTimeout(() => {
-        if (audioRef.current) {
-          audioRef.current.currentTime = seekPosition;
-          audioRef.current.play();
-          setIsPlaying(true);
-        }
-      }, 500);
-    };
+      if (audioRef.current) {
+        audioRef.current.currentTime= data.duration;
+        audioRef.current.play().catch(e => console.error("Playback error:", e));
+      }
+    }
 
-    //socket.on("track-update", handleTrackUpdate);
-    //
-    socket.on("song_change", (track) => {
-      console.log("📥 Received track update:", track);
-      setCurrentTrack(track);
-      setTimeout(() => {
-        if (audioRef.current) {
-          const elapsedTime = (Date.now() - track.startTime) / 1000;
-          audioRef.current.currentTime = elapsedTime;
-          audioRef.current.play();
-          setIsPlaying(true);
-        }
-      }, 500);
-    });
+    socket.on("running_track", handleRunningTrack);
 
-    return () => {
-      socket.off("song_chagne");
-      //socket.off("track-update", handleTrackUpdate);
-    };
-
+    return(() => {
+      setCurrentTrack({ name: "", url: "" });
+      setIsPlaying(false);
+      setDuration(0);
+      setFullDuration(0);
+      socket.off("running_track", handleRunningTrack);
+    })
+     
   }, [roomid]);
 
   return (

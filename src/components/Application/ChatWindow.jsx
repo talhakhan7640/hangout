@@ -16,6 +16,12 @@ import { BsEmojiWink } from "react-icons/bs";
 import { PiGifFill } from "react-icons/pi";
 import { LuSticker } from "react-icons/lu";
 
+// Notification component
+import Notification from "./Notification";
+
+
+import MP from "./MP";
+
 // modules for uploading files on the firestore
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -85,8 +91,8 @@ const ChatWindow = () => {
     }
 
     if (messageContent.length > 0 || fileUrlToSend) {
-      const url = "https://hagnout-backend.onrender.com/messages/send";
-       //const url = "http://localhost:5000/messages/send";
+      //const url = "https://hagnout-backend.onrender.com/messages/send";
+       const url = "http://localhost:5000/messages/send";
 
       await fetch(url, {
         method: "POST",
@@ -102,12 +108,11 @@ const ChatWindow = () => {
         }),
       })
         .then((response) => {
-          socket.emit("msg", {
-            messageContent: messageContent,
-            fileUrl: fileUrlToSend,
-            username: cookie.get("username"),
-          });
-          return response.json();
+        socket.emit("send-message", { roomId : roomid, message: {
+          messageContent: messageContent,
+          fileUrl: fileUrlToSend
+        }, username : cookie.get("username") });
+        return response.json();
         })
         .then((data) => {
           setFileToSend(null);
@@ -144,9 +149,22 @@ const ChatWindow = () => {
       });
   };
 
+  const [newUserMessage, setNewUserMessage] = useState("");
+  const [messageKey, setMessageKey] = useState(0);
+
+  useEffect(() => {
+    socket.emit("join_room", { roomId: roomid, username: cookie.get("username") });
+    socket.on("greetings", (data) => console.log(data));
+    return () => {
+      socket.emit("leave-room", { roomId: roomid, username: cookie.get("username") });
+      socket.off("running_track");
+    };
+  }, [roomid]);
+
   return (
     <div className="message--container grid grid-cols-12">
       <div className="col-span-12 xl:col-span-9 h-screen flex flex-col">
+        <Notification message={newUserMessage} key={messageKey} />
         {/* Top Section */}
         <div className="md:h-14 flex py-2 items-center px-3 md:px-4 justify-between top--bar flex-shrink-0 border-b-2 border-[#19191b]">
           {/* Room Name on Left */}
@@ -296,7 +314,9 @@ const ChatWindow = () => {
 
       {
       <div className="hidden xl:block xl:col-span-3">
-         <MusicPlayer />
+          {/*   <MusicPlayer /> */}
+          <MP />
+        
       </div>
 }
     </div>

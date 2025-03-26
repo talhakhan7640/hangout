@@ -7,7 +7,7 @@ const localSocket = "http://localhost:5000";
 const liveSocket = "https://hagnout-backend.onrender.com/"
 
 //Create a socket instance 
-const socket = io(liveSocket, {
+const socket = io(localSocket, {
 	autoConnect: true,
 	extraHeaders: {
 		'my-custom-header' : "abcd",

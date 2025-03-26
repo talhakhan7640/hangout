@@ -7,8 +7,8 @@ const Messages = ({ roomid }) => {
   const [messageContainer, setMessageContainer] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //const url = `https://hagnout-backend.onrender.com/messages/${roomid}`;
-  const url = `http://localhost:5000/messages/${roomid}`
+  const url = `https://hagnout-backend.onrender.com/messages/${roomid}`;
+  //const url = `http://localhost:5000/messages/${roomid}`
 
   useEffect(() => {
     const controller = new AbortController();

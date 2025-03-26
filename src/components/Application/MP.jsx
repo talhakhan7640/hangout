@@ -127,8 +127,8 @@ const MusicPlayer = () => {
   })
 
   useEffect(() => {
-    //const url = `https://hagnout-backend.onrender.com/rooms/fetch-tracks/${roomid}`;
-    const url = `http://localhost:5000/rooms/fetch-tracks/${roomid}`;
+    const url = `https://hagnout-backend.onrender.com/rooms/fetch-tracks/${roomid}`;
+    //const url = `http://localhost:5000/rooms/fetch-tracks/${roomid}`;
     const fetchTracks = async () => {
       const response = await fetch(url,{ credentials: 'include'});
       const data = await response.json();

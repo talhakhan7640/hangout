@@ -91,8 +91,8 @@ const ChatWindow = () => {
     }
 
     if (messageContent.length > 0 || fileUrlToSend) {
-      //const url = "https://hagnout-backend.onrender.com/messages/send";
-       const url = "http://localhost:5000/messages/send";
+      const url = "https://hagnout-backend.onrender.com/messages/send";
+       //const url = "http://localhost:5000/messages/send";
 
       await fetch(url, {
         method: "POST",

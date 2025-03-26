@@ -51,29 +51,9 @@ const Rooms = () => {
 
   // fetch rooms the current user has joined
   useEffect(() => {
-    //const url = "https://hagnout-backend.onrender.com/rooms/fetch-rooms/";
-    const url = "http://localhost:5000/rooms/fetch-rooms/";
-
-
-    // FOR EDUCATIONAL PURPOSE ONLY ---- NOT SUITABLE FOR PRODUCTION
-    //const cookies = document.cookie.token;
+    const url = "https://hagnout-backend.onrender.com/rooms/fetch-rooms/";
+    //const url = "http://localhost:5000/rooms/fetch-rooms/";
     //
-    //function getCookie(name) {
-    //  const cookies = document.cookie.split('; ');
-    //  console.log(cookies);
-    //  for (const cookie of cookies) {
-    //    const [key, value] = cookie.split('=');
-    //    if (key === name) {
-    //      return value;
-    //    }
-    //  }
-    //  return null; // Return null if cookie not found
-    //}
-
-    //const manualToken = getCookie("manualToken");
-    //console.log("manual token", manualToken);
-    //
-
     const response = fetch(url, {
       method: "POST",
       credentials: 'include',
